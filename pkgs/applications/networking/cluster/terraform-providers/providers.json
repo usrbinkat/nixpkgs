@@ -364,11 +364,11 @@
     "vendorHash": "sha256-Zi2e/Vg9iKTrU8Mb37Y8xHYIBL+IfDnWMUUg5Vqrbfo="
   },
   "exoscale": {
-    "hash": "sha256-48msmXj7SFmi5TA0/QYm66oIETymWi5ayF+yExyp+hk=",
+    "hash": "sha256-nkCpgreQ8mOLfGAlCDQYYA14Df1Lr6RzDCBWgQNVi6k=",
     "homepage": "https://registry.terraform.io/providers/exoscale/exoscale",
     "owner": "exoscale",
     "repo": "terraform-provider-exoscale",
-    "rev": "v0.44.0",
+    "rev": "v0.45.0",
     "spdx": "MPL-2.0",
     "vendorHash": null
   },
@@ -438,24 +438,24 @@
     "vendorHash": "sha256-aVbJT31IIgW0GYzwVX7kT4j7E+dadSbnttThh2lzGyE="
   },
   "google": {
-    "hash": "sha256-B/eXf31mRtWpl6TCv/hukPWfbb7Ne4W2FUMxiAbfsfI=",
+    "hash": "sha256-z5Fi+ac7dcDr/eTTJWWfsIm9tJJ+NgcY2L08h317G7g=",
     "homepage": "https://registry.terraform.io/providers/hashicorp/google",
     "owner": "hashicorp",
     "proxyVendor": true,
     "repo": "terraform-provider-google",
-    "rev": "v4.52.0",
+    "rev": "v4.53.0",
     "spdx": "MPL-2.0",
-    "vendorHash": "sha256-oModEw/gaQCDHLf+2EKf1O1HQSGWnqEReXowE6F7W0o="
+    "vendorHash": "sha256-glxBI4e5BN28GMGeixUSiCaDTIlr+8e4QHnzaDagyno="
   },
   "google-beta": {
-    "hash": "sha256-ISOhZqc6/RMqG4n63RjQluy0odkKATcCa52YpQW89xQ=",
+    "hash": "sha256-0NCndgGz/xrYNvWjs49u//VXvndw0RFyAINnGUTKQ4s=",
     "homepage": "https://registry.terraform.io/providers/hashicorp/google-beta",
     "owner": "hashicorp",
     "proxyVendor": true,
     "repo": "terraform-provider-google-beta",
-    "rev": "v4.52.0",
+    "rev": "v4.53.0",
     "spdx": "MPL-2.0",
-    "vendorHash": "sha256-oModEw/gaQCDHLf+2EKf1O1HQSGWnqEReXowE6F7W0o="
+    "vendorHash": "sha256-glxBI4e5BN28GMGeixUSiCaDTIlr+8e4QHnzaDagyno="
   },
   "googleworkspace": {
     "hash": "sha256-dedYnsKHizxJZibuvJOMbJoux0W6zgKaK5fxIofKqCY=",
@@ -467,13 +467,13 @@
     "vendorHash": "sha256-fqVBnAivVekV+4tpkl+E6eNA3wi8mhLevJRCs3W7L2g="
   },
   "grafana": {
-    "hash": "sha256-K1Pal5Fn6KxIlmcnOW6SNPdOzT9JExwhVRFDVTbaTug=",
+    "hash": "sha256-4K0Pk7tgnOjFdHpe6SZNSt/wU8OBzdB/y99nibW5bAY=",
     "homepage": "https://registry.terraform.io/providers/grafana/grafana",
     "owner": "grafana",
     "repo": "terraform-provider-grafana",
-    "rev": "v1.34.0",
+    "rev": "v1.35.0",
     "spdx": "MPL-2.0",
-    "vendorHash": "sha256-fTc0cNo/ZWUo2tORzDKSDjFsXYIMz+a2+Zsx4fzd3ic="
+    "vendorHash": "sha256-oSpAq2834Nt+E8l64YhvuXdfUsoTU5rBr2I8+Yz9tkc="
   },
   "gridscale": {
     "hash": "sha256-ahYCrjrJPEItGyqbHYtgkIH/RzMyxBQkebSAyd8gwYo=",
