@@ -5188,6 +5188,12 @@
     githubId = 606000;
     name = "Gabriel Adomnicai";
   };
+  garaiza-93 = {
+    email = "araizagustavo93@gmail.com";
+    github = "garaiza-93";
+    githubId = 57430880;
+    name = "Gustavo Araiza";
+  };
   Gabriel439 = {
     email = "Gabriel439@gmail.com";
     github = "Gabriella439";
@@ -10522,6 +10528,12 @@
     name = "nikstur";
     github = "nikstur";
     githubId = 61635709;
+  };
+  nintron = {
+    email = "nintron@sent.com";
+    github = "Nintron27";
+    githubId = 47835714;
+    name = "Nintron";
   };
   ngerstle = {
     name = "Nicholas Gerstle";
