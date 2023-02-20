@@ -29,6 +29,10 @@ let
     image-editor = callPackage ./library/image-editor { };
     udisks2-qt5 = callPackage ./library/udisks2-qt5 { };
 
+    #### CORE
+    dde-polkit-agent = callPackage ./core/dde-polkit-agent { };
+    dpa-ext-gnomekeyring = callPackage ./core/dpa-ext-gnomekeyring { };
+
     #### Dtk Application
     deepin-album = callPackage ./apps/deepin-album { };
     deepin-calculator = callPackage ./apps/deepin-calculator { };
@@ -45,6 +49,7 @@ let
     go-lib = callPackage ./go-package/go-lib { inherit replaceAll; };
     go-gir-generator = callPackage ./go-package/go-gir-generator { };
     go-dbus-factory = callPackage ./go-package/go-dbus-factory { };
+    dde-api = callPackage ./go-package/dde-api { inherit replaceAll; };
     deepin-pw-check = callPackage ./go-package/deepin-pw-check { };
 
     #### TOOLS
@@ -53,6 +58,7 @@ let
     #### ARTWORK
     dde-account-faces = callPackage ./artwork/dde-account-faces { };
     deepin-icon-theme = callPackage ./artwork/deepin-icon-theme { };
+    deepin-wallpapers = callPackage ./artwork/deepin-wallpapers { };
     deepin-gtk-theme = callPackage ./artwork/deepin-gtk-theme { };
     deepin-sound-theme = callPackage ./artwork/deepin-sound-theme { };
 

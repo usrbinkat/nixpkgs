@@ -1300,6 +1300,8 @@ self: super: with self; {
 
   black = callPackage ../development/python-modules/black { };
 
+  blackjax = callPackage ../development/python-modules/blackjax { };
+
   black-macchiato = callPackage ../development/python-modules/black-macchiato { };
 
   bleach = callPackage ../development/python-modules/bleach { };
@@ -1418,6 +1420,8 @@ self: super: with self; {
   breezy = callPackage ../development/python-modules/breezy { };
 
   brelpy = callPackage ../development/python-modules/brelpy { };
+
+  brian2 = callPackage ../development/python-modules/brian2 { };
 
   broadlink = callPackage ../development/python-modules/broadlink { };
 
@@ -2371,6 +2375,8 @@ self: super: with self; {
 
   deploykit = callPackage ../development/python-modules/deploykit { };
 
+  deprecat = callPackage ../development/python-modules/deprecat { };
+
   deprecated = callPackage ../development/python-modules/deprecated { };
 
   deprecation = callPackage ../development/python-modules/deprecation { };
@@ -3297,6 +3303,8 @@ self: super: with self; {
 
   fasttext = callPackage ../development/python-modules/fasttext { };
 
+  fasttext-predict = callPackage ../development/python-modules/fasttext-predict { };
+
   favicon = callPackage ../development/python-modules/favicon { };
 
   fb-re2 = callPackage ../development/python-modules/fb-re2 { };
@@ -3721,8 +3729,6 @@ self: super: with self; {
   });
 
   gdown = callPackage ../development/python-modules/gdown { };
-
-  gdtoolkit = callPackage ../development/python-modules/gdtoolkit { };
 
   ge25519 = callPackage ../development/python-modules/ge25519 { };
 
@@ -4865,6 +4871,8 @@ self: super: with self; {
   jaxlibWithoutCuda = self.jaxlib-build.override {
     cudaSupport = false;
   };
+
+  jaxopt = callPackage ../development/python-modules/jaxopt { };
 
   JayDeBeApi = callPackage ../development/python-modules/JayDeBeApi { };
 
@@ -6297,6 +6305,8 @@ self: super: with self; {
   neo4j = callPackage ../development/python-modules/neo4j { };
 
   nessclient = callPackage ../development/python-modules/nessclient { };
+
+  nest = toPythonModule(pkgs.nest-mpi.override { withPython = true; python3 = python; });
 
   nest-asyncio = callPackage ../development/python-modules/nest-asyncio { };
 
@@ -8318,8 +8328,6 @@ self: super: with self; {
   pyls-flake8 = callPackage ../development/python-modules/pyls-flake8 { };
 
   pyls-isort = callPackage ../development/python-modules/pyls-isort { };
-
-  pyls-mypy = callPackage ../development/python-modules/pyls-mypy { };
 
   pyls-spyder = callPackage ../development/python-modules/pyls-spyder { };
 
@@ -10379,6 +10387,8 @@ self: super: with self; {
 
   scrapy-splash = callPackage ../development/python-modules/scrapy-splash { };
 
+  screed = callPackage ../development/python-modules/screed { };
+
   screeninfo = callPackage ../development/python-modules/screeninfo { };
 
   screenlogicpy = callPackage ../development/python-modules/screenlogicpy { };
@@ -10798,7 +10808,9 @@ self: super: with self; {
 
   spacy-loggers = callPackage ../development/python-modules/spacy-loggers { };
 
-  spacy_models = callPackage ../development/python-modules/spacy/models.nix { };
+  spacy_models = callPackage ../development/python-modules/spacy/models.nix {
+      inherit (pkgs) jq;
+  };
 
   spacy-pkuseg = callPackage ../development/python-modules/spacy-pkuseg { };
 
@@ -11825,6 +11837,8 @@ self: super: with self; {
   types-futures = callPackage ../development/python-modules/types-futures { };
 
   types-ipaddress = callPackage ../development/python-modules/types-ipaddress { };
+
+  types-pillow = callPackage ../development/python-modules/types-pillow { };
 
   types-protobuf = callPackage ../development/python-modules/types-protobuf { };
 
