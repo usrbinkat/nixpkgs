@@ -152,9 +152,11 @@ let
 
       ${lib.optionalString cfg.useBootLoader
       ''
-        # Create a writable copy/snapshot of the boot disk.
-        # A writable boot disk can be booted from automatically.
-        ${qemu}/bin/qemu-img create -f qcow2 -F qcow2 -b ${bootDisk}/disk.img "$TMPDIR/disk.img"
+        if ${if !cfg.persistBootDevice then "true" else "! test -e $TMPDIR/disk.img"}; then
+          # Create a writable copy/snapshot of the boot disk.
+          # A writable boot disk can be booted from automatically.
+          ${qemu}/bin/qemu-img create -f qcow2 -F qcow2 -b ${bootDisk}/disk.img "$TMPDIR/disk.img"
+        fi
 
         NIX_EFI_VARS=$(readlink -f "''${NIX_EFI_VARS:-${cfg.efiVars}}")
 
@@ -368,6 +370,17 @@ in
           lib.mdDoc ''
             The disk to be used for the root filesystem.
           '';
+      };
+
+    virtualisation.persistBootDevice =
+      mkOption {
+        type = types.bool;
+        default = false;
+        description =
+          lib.mdDoc ''
+            If useBootLoader is specified, whether to recreate the boot device
+            on each instantiaton or allow it to persist.
+            '';
       };
 
     virtualisation.emptyDiskImages =
@@ -853,6 +866,8 @@ in
     # * The disks are attached in `virtualisation.qemu.drives`.
     #   Their order makes them appear as devices `a`, `b`, etc.
     # * `fileSystems."/boot"` is adjusted to be on device `b`.
+    # * The disk.img is recreated each time the VM is booted unless
+    #   virtualisation.persistBootDevice is set.
 
     # If `useBootLoader`, GRUB goes to the second disk, see
     # note [Disk layout with `useBootLoader`].
@@ -895,7 +910,7 @@ in
 
         ${optionalString cfg.writableStore ''
           echo "mounting overlay filesystem on /nix/store..."
-          mkdir -p 0755 $targetRoot/nix/.rw-store/store $targetRoot/nix/.rw-store/work $targetRoot/nix/store
+          mkdir -p -m 0755 $targetRoot/nix/.rw-store/store $targetRoot/nix/.rw-store/work $targetRoot/nix/store
           mount -t overlay overlay $targetRoot/nix/store \
             -o lowerdir=$targetRoot/nix/.ro-store,upperdir=$targetRoot/nix/.rw-store/store,workdir=$targetRoot/nix/.rw-store/work || fail
         ''}
@@ -1097,7 +1112,7 @@ in
         unitConfig.DefaultDependencies = false;
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "/bin/mkdir -p 0755 /sysroot/nix/.rw-store/store /sysroot/nix/.rw-store/work /sysroot/nix/store";
+          ExecStart = "/bin/mkdir -p -m 0755 /sysroot/nix/.rw-store/store /sysroot/nix/.rw-store/work /sysroot/nix/store";
         };
       };
     };
