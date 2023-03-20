@@ -4114,6 +4114,12 @@
       fingerprint = "5DD7 C6F6 0630 F08E DAE7  4711 1525 585D 1B43 C62A";
     }];
   };
+  dlyons = {
+    email = "dustin@dlyons.dev";
+    github = "dustinlyons";
+    githubId = 1292576;
+    name = "Dustin Lyons";
+  };
   dwarfmaster = {
     email = "nixpkgs@dwarfmaster.net";
     github = "dwarfmaster";
