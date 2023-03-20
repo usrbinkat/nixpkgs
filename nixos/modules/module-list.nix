@@ -377,6 +377,8 @@
   ./services/continuous-integration/jenkins/default.nix
   ./services/continuous-integration/jenkins/job-builder.nix
   ./services/continuous-integration/jenkins/slave.nix
+  ./services/continuous-integration/woodpecker/agent.nix
+  ./services/continuous-integration/woodpecker/server.nix
   ./services/databases/aerospike.nix
   ./services/databases/cassandra.nix
   ./services/databases/clickhouse.nix
@@ -948,6 +950,7 @@
   ./services/networking/owamp.nix
   ./services/networking/pdns-recursor.nix
   ./services/networking/pdnsd.nix
+  ./services/networking/peroxide.nix
   ./services/networking/pixiecore.nix
   ./services/networking/pleroma.nix
   ./services/networking/polipo.nix
@@ -1059,7 +1062,6 @@
   ./services/search/meilisearch.nix
   ./services/search/opensearch.nix
   ./services/search/qdrant.nix
-  ./services/search/solr.nix
   ./services/security/aesmd.nix
   ./services/security/certmgr.nix
   ./services/security/cfssl.nix
