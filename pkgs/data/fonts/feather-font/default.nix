@@ -12,7 +12,7 @@ fetchzip {
     unzip -D -j /build/${version}.zip  ${pname}-${version}/feather.ttf -d $out/share/fonts/truetype/
   '';
 
-  sha256 = "17ac67678axx05gcx0qmr9jhcvkydn6kxv6alh91hdxnszf1xfsl";
+  sha256 = "sha256-OFD0N+qHetl2z8Vcv4mZAgR6YHifVhdMFBIZYYSQWcs=";
 
   meta = with lib; {
     homepage = "https://www.feathericons.com/";
