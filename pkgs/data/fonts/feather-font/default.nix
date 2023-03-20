@@ -5,7 +5,7 @@ in
 fetchzip {
   name = "feather-font";
 
-  url = "https://github.com/dustinlyons/feather-font/archive/refs/tags/${version}.zip"
+  url = "https://github.com/dustinlyons/feather-font/archive/refs/tags/${version}.zip";
 
   postFetch = ''
     mkdir -p $out/share/fonts
