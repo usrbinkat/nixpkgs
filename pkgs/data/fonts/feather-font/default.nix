@@ -9,7 +9,7 @@ fetchzip {
 
   postFetch = ''
     mkdir -p $out/share/fonts/truetype
-    unzip -D -j ${version}.zip  ${pname}-${version}/feather.ttf -d $out/share/fonts/truetype/
+    unzip -D -j /build/${version}.zip  ${pname}-${version}/feather.ttf -d $out/share/fonts/truetype/
   '';
 
   sha256 = "1jd3gjjfa4vadp6d499n0irz5b22z611kd7q5qgqf6s2fwbxfhiz";
