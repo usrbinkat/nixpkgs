@@ -9,7 +9,7 @@ fetchzip {
 
   postFetch = ''
     mkdir -p $out/share/fonts
-    unzip -j $downloadedFile \*.ttf -d $out/share/fonts/truetype
+    unzip -j feather-font-${version} \*.ttf -d $out/share/fonts/truetype
   '';
 
   sha256 = "1jd3gjjfa4vadp6d499n0irz5b22z611kd7q5qgqf6s2fwbxfhiz";
