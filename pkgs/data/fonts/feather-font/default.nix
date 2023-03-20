@@ -1,15 +1,15 @@
 { lib, fetchzip }:
 let
   version = "1.0";
+  pname = "feather-font";
 in
 fetchzip {
-  name = "feather-font";
-
+  name = "${pname}-${version}";
   url = "https://github.com/dustinlyons/feather-font/archive/refs/tags/${version}.zip";
 
   postFetch = ''
-    mkdir -p $out/share/fonts
-    unzip -j feather-font-${version} \*.ttf -d $out/share/fonts/truetype
+    mkdir -p $out/share/fonts/truetype
+    unzip -D -j $downloadedFile ${pname}-${version}/feather.ttf -d $out/share/fonts/truetype/
   '';
 
   sha256 = "1jd3gjjfa4vadp6d499n0irz5b22z611kd7q5qgqf6s2fwbxfhiz";
