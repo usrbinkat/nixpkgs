@@ -27530,6 +27530,8 @@ with pkgs;
 
   faba-mono-icons = callPackage ../data/icons/faba-mono-icons { };
 
+  feather-font = callPackage ../data/fonts/feather-font { };
+
   ferrum = callPackage ../data/fonts/ferrum { };
 
   fixedsys-excelsior = callPackage ../data/fonts/fixedsys-excelsior { };
