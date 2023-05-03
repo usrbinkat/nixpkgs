@@ -52,6 +52,7 @@
 , withIlbc ? withFullDeps
 , withJack ? withFullDeps && !stdenv.isDarwin # Jack audio
 , withLadspa ? withFullDeps # LADSPA audio filtering
+, withLibplacebo ? withFullDeps && !stdenv.isDarwin # libplacebo video processing library
 , withLzma ? withHeadlessDeps # xz-utils
 , withMfx ? withFullDeps && (with stdenv.targetPlatform; isLinux && !isAarch) # Hardware acceleration via intel-media-sdk/libmfx
 , withModplug ? withFullDeps && !stdenv.isDarwin # ModPlug support
@@ -209,6 +210,7 @@
 , libogg
 , libopenmpt
 , libopus
+, libplacebo
 , librsvg
 , libssh
 , libtheora
@@ -227,6 +229,7 @@
 , libxml2
 , xz
 , nv-codec-headers
+, nv-codec-headers-11
 , openal
 , ocl-icd # OpenCL ICD
 , opencl-headers  # OpenCL headers
@@ -287,7 +290,7 @@
  */
 
 let
-  inherit (lib) optional optionals optionalString enableFeature;
+  inherit (lib) optional optionals optionalString enableFeature versionAtLeast;
 in
 
 
@@ -348,7 +351,14 @@ stdenv.mkDerivation (finalAttrs: {
       --replace VK_EXT_VIDEO_DECODE VK_KHR_VIDEO_DECODE
   '';
 
-  patches = map (patch: fetchpatch patch) extraPatches;
+  patches = map (patch: fetchpatch patch) (extraPatches
+    ++ (lib.optional (lib.versionAtLeast version "6" && lib.versionOlder version "6.1")
+      { # this can be removed post 6.1
+        name = "fix_aacps_tablegen";
+        url = "https://git.ffmpeg.org/gitweb/ffmpeg.git/patch/814178f92647be2411516bbb82f48532373d2554";
+        hash = "sha256-FQV9/PiarPXCm45ldtCsxGHjlrriL8DKpn1LaKJ8owI=";
+      }
+    ));
 
   configurePlatforms = [];
   setOutputFlags = false; # Only accepts some of them
@@ -461,6 +471,7 @@ stdenv.mkDerivation (finalAttrs: {
     (enableFeature withModplug "libmodplug")
     (enableFeature withMysofa "libmysofa")
     (enableFeature withOpus "libopus")
+    (optionalString (versionAtLeast version "5.0" && withLibplacebo) "--enable-libplacebo")
     (enableFeature withSvg "librsvg")
     (enableFeature withSrt "libsrt")
     (enableFeature withSsh "libssh")
@@ -539,7 +550,7 @@ stdenv.mkDerivation (finalAttrs: {
   # TODO This was always in buildInputs before, why?
   buildInputs = optionals withFullDeps [ libdc1394 ]
   ++ optionals (withFullDeps && !stdenv.isDarwin) [ libraw1394 ] # TODO where does this belong to
-  ++ optionals (withNvdec || withNvenc) [ nv-codec-headers ]
+  ++ optionals (withNvdec || withNvenc) [ (if (lib.versionAtLeast version "6") then nv-codec-headers-11 else nv-codec-headers) ]
   ++ optionals withAlsa [ alsa-lib ]
   ++ optionals withAom [ libaom ]
   ++ optionals withAss [ libass ]
@@ -563,6 +574,7 @@ stdenv.mkDerivation (finalAttrs: {
   ++ optionals withIconv [ libiconv ] # On Linux this should be in libc, do we really need it?
   ++ optionals withJack [ libjack2 ]
   ++ optionals withLadspa [ ladspaH ]
+  ++ optionals withLibplacebo [ libplacebo vulkan-headers ]
   ++ optionals withLzma [ xz ]
   ++ optionals withMfx [ intel-media-sdk ]
   ++ optionals withModplug [ libmodplug ]

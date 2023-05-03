@@ -1,7 +1,6 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, fetchpatch
 , alsa-lib
 , appstream-glib
 , cmake
@@ -24,28 +23,23 @@
 
 stdenv.mkDerivation rec {
   pname = "rnote";
-  version = "0.5.18";
+  version = "0.6.0";
 
   src = fetchFromGitHub {
     owner = "flxzt";
     repo = "rnote";
     rev = "v${version}";
-    hash = "sha256-N07Y9kmGvMFS0Kq4i2CltJvNTuqbXausZZGjAQRDmNU=";
+    hash = "sha256-47mWlUXp62fMh5c13enFjmuMxzrmEZlwJFsZhYCB1Vs=";
   };
 
-  cargoDeps = rustPlatform.fetchCargoTarball {
-    inherit src;
-    name = "${pname}-${version}";
-    hash = "sha256-ckYmoZLPPo/3WsdA0ir7iBJDqKn7ZAkN0f110ADSBC0=";
+  cargoDeps = rustPlatform.importCargoLock {
+    lockFile = ./Cargo.lock;
+    outputHashes = {
+      "ink-stroke-modeler-rs-0.1.0" = "sha256-DrbFolHGL3ywk2p6Ly3x0vbjqxy1mXld+5CPrNlJfQM=";
+      "librsvg-2.56.0" = "sha256-4poP7xsoylmnKaUWuJ0tnlgEMpw9iJrM3dvt4IaFi7w=";
+      "piet-0.6.2" = "sha256-If0qiZkgXeLvsrECItV9/HmhTk1H52xmVO7cUsD9dcU=";
+    };
   };
-
-  patches = [
-    # https://github.com/flxzt/rnote/pull/569
-    (fetchpatch {
-      url = "https://github.com/flxzt/rnote/commit/8585b446c08b246f3d55359026415cb3d242d44e.patch";
-      hash = "sha256-ePpTQ/3mzZTNjU9P4vTu9CM0vX8+r8b6njuj7hDgFCg=";
-    })
-  ];
 
   nativeBuildInputs = [
     appstream-glib # For appstream-util
@@ -65,6 +59,10 @@ stdenv.mkDerivation rec {
 
   dontUseCmakeConfigure = true;
 
+  mesonFlags = [
+    (lib.mesonBool "cli" true)
+  ];
+
   buildInputs = [
     glib
     gstreamer
@@ -82,7 +80,6 @@ stdenv.mkDerivation rec {
     pushd build-aux
     chmod +x cargo_build.py meson_post_install.py
     patchShebangs cargo_build.py meson_post_install.py
-    substituteInPlace meson_post_install.py --replace "gtk-update-icon-cache" "gtk4-update-icon-cache"
     popd
   '';
 

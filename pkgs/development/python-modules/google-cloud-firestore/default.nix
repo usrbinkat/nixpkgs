@@ -15,14 +15,14 @@
 
 buildPythonPackage rec {
   pname = "google-cloud-firestore";
-  version = "2.10.0";
+  version = "2.11.0";
   format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-iCwYBZhWfheyYTOm2IQIXr3OXyoi4FWNykzzbWV+5wY=";
+    hash = "sha256-mA3FX3Cg7ldApxNGka21jNW9ljGKu+rF3MhfqmekDa4=";
   };
 
   propagatedBuildInputs = [

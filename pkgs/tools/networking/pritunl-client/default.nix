@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "pritunl-client";
-  version = "1.3.3467.51";
+  version = "1.3.3484.2";
 
   src = fetchFromGitHub {
     owner = "pritunl";
     repo = "pritunl-client-electron";
     rev = version;
-    sha256 = "sha256-US1A3PjWxycXzOW/1Mi8GVkxvH6xCFq4mo5gU49vytU=";
+    sha256 = "sha256-thIbw/Iek2vNNmkOBHrzEhTbaOm05CsbjqORQKC2jIs=";
   };
 
   modRoot = "cli";
@@ -22,6 +22,6 @@ buildGoModule rec {
     description = "Pritunl OpenVPN client CLI";
     homepage = "https://github.com/pritunl/pritunl-client-electron/tree/master/cli";
     license = licenses.unfree;
-    maintainers = with maintainers; [ bigzilla ];
+    maintainers = with maintainers; [ minizilla ];
   };
 }

@@ -85,12 +85,7 @@ sub debug {
 
 
 # nixpkgs.system
-my ($status, @systemLines) = runCommand("@nixInstantiate@ --impure --eval --expr builtins.currentSystem");
-if ($status != 0 || join("", @systemLines) =~ /error/) {
-    die "Failed to retrieve current system type from nix.\n";
-}
-chomp(my $system = @systemLines[0]);
-push @attrs, "nixpkgs.hostPlatform = lib.mkDefault $system;";
+push @attrs, "nixpkgs.hostPlatform = lib.mkDefault \"@system@\";";
 
 
 my $cpuinfo = read_file "/proc/cpuinfo";
@@ -200,7 +195,7 @@ sub pciCheck {
     }
 
     # In case this is a virtio scsi device, we need to explicitly make this available.
-    if ($vendor eq "0x1af4" && $device eq "0x1004") {
+    if ($vendor eq "0x1af4" && ($device eq "0x1004" || $device eq "0x1048") ) {
         push @initrdAvailableKernelModules, "virtio_scsi";
     }
 
@@ -473,7 +468,7 @@ EOF
     }
 
     # Don't emit tmpfs entry for /tmp, because it most likely comes from the
-    # boot.tmpOnTmpfs option in configuration.nix (managed declaratively).
+    # boot.tmp.useTmpfs option in configuration.nix (managed declaratively).
     next if ($mountPoint eq "/tmp" && $fsType eq "tmpfs");
 
     # Emit the filesystem.
@@ -515,21 +510,6 @@ EOF
                 }
             }
         }
-    }
-}
-
-# For lack of a better way to determine it, guess whether we should use a
-# bigger font for the console from the display mode on the first
-# framebuffer. A way based on the physical size/actual DPI reported by
-# the monitor would be nice, but I don't know how to do this without X :)
-my $fb_modes_file = "/sys/class/graphics/fb0/modes";
-if (-f $fb_modes_file && -r $fb_modes_file) {
-    my $modes = read_file($fb_modes_file);
-    $modes =~ m/([0-9]+)x([0-9]+)/;
-    my $console_width = $1, my $console_height = $2;
-    if ($console_width > 1920) {
-        push @attrs, "# high-resolution display";
-        push @attrs, 'hardware.video.hidpi.enable = lib.mkDefault true;';
     }
 }
 
