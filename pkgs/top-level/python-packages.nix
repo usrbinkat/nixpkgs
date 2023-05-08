@@ -1985,6 +1985,8 @@ self: super: with self; {
 
   colour = callPackage ../development/python-modules/colour { };
 
+  colout = callPackage ../development/python-modules/colout { };
+
   cometblue-lite = callPackage ../development/python-modules/cometblue-lite { };
 
   comm = callPackage ../development/python-modules/comm { };
@@ -2062,8 +2064,6 @@ self: super: with self; {
   coreschema = callPackage ../development/python-modules/coreschema { };
 
   cornice = callPackage ../development/python-modules/cornice { };
-
-  coronavirus = callPackage ../development/python-modules/coronavirus { };
 
   corsair-scan = callPackage ../development/python-modules/corsair-scan { };
 
@@ -3690,6 +3690,8 @@ self: super: with self; {
   flynt = callPackage ../development/python-modules/flynt { };
 
   fn = callPackage ../development/python-modules/fn { };
+
+  fnv-hash-fast = callPackage ../development/python-modules/fnv-hash-fast { };
 
   fnvhash = callPackage ../development/python-modules/fnvhash { };
 
@@ -5406,6 +5408,8 @@ self: super: with self; {
 
   lakeside = callPackage ../development/python-modules/lakeside { };
 
+  langchain = callPackage ../development/python-modules/langchain { };
+
   langcodes = callPackage ../development/python-modules/langcodes { };
 
   langdetect = callPackage ../development/python-modules/langdetect { };
@@ -6516,6 +6520,8 @@ self: super: with self; {
 
   nclib = callPackage ../development/python-modules/nclib { };
 
+  ndeflib = callPackage ../development/python-modules/ndeflib { };
+
   ndg-httpsclient = callPackage ../development/python-modules/ndg-httpsclient { };
 
   ndindex = callPackage ../development/python-modules/ndindex { };
@@ -6579,6 +6585,8 @@ self: super: with self; {
   nextcord = callPackage ../development/python-modules/nextcord { };
 
   nextdns = callPackage ../development/python-modules/nextdns { };
+
+  nfcpy = callPackage ../development/python-modules/nfcpy { };
 
   nftables = toPythonModule (pkgs.nftables.override {
     python3 = python;
@@ -6905,6 +6913,8 @@ self: super: with self; {
   };
 
   openant = callPackage ../development/python-modules/openant { };
+
+  openapi-schema-pydantic = callPackage ../development/python-modules/openapi-schema-pydantic { };
 
   openapi-schema-validator = callPackage ../development/python-modules/openapi-schema-validator { };
 
@@ -10356,6 +10366,8 @@ self: super: with self; {
 
   requirements-parser = callPackage ../development/python-modules/requirements-parser { };
 
+  reretry = callPackage ../development/python-modules/reretry { };
+
   resampy = callPackage ../development/python-modules/resampy { };
 
   resolvelib = callPackage ../development/python-modules/resolvelib { };
@@ -10577,6 +10589,8 @@ self: super: with self; {
   ruff-lsp = callPackage ../development/python-modules/ruff-lsp { };
 
   ruffus = callPackage ../development/python-modules/ruffus { };
+
+  rules = callPackage ../development/python-modules/rules { };
 
   ruuvitag-ble = callPackage ../development/python-modules/ruuvitag-ble { };
 
@@ -11281,6 +11295,8 @@ self: super: with self; {
     inherit (pkgs) mscgen;
   };
 
+  sphinxcontrib-log-cabinet = callPackage ../development/python-modules/sphinxcontrib-log-cabinet { };
+
   sphinxcontrib-nwdiag = callPackage ../development/python-modules/sphinxcontrib-nwdiag { };
 
   sphinxcontrib_newsfeed = callPackage ../development/python-modules/sphinxcontrib_newsfeed { };
@@ -11324,6 +11340,8 @@ self: super: with self; {
   sphinxemoji = callPackage ../development/python-modules/sphinxemoji { };
 
   sphinx-inline-tabs = callPackage ../development/python-modules/sphinx-inline-tabs { };
+
+  sphinx-issues = callPackage ../development/python-modules/sphinx-issues { };
 
   sphinx-jinja = callPackage ../development/python-modules/sphinx-jinja { };
 
@@ -11866,6 +11884,8 @@ self: super: with self; {
   thrift = callPackage ../development/python-modules/thrift { };
 
   thriftpy2 = callPackage ../development/python-modules/thriftpy2 { };
+
+  throttler = callPackage ../development/python-modules/throttler { };
 
   thumborPexif = callPackage ../development/python-modules/thumborpexif { };
 
@@ -12443,6 +12463,8 @@ self: super: with self; {
   urlgrabber = callPackage ../development/python-modules/urlgrabber { };
 
   urllib3 = callPackage ../development/python-modules/urllib3 { };
+
+  urlman = callPackage ../development/python-modules/urlman { };
 
   urlpy = callPackage ../development/python-modules/urlpy { };
 
