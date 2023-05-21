@@ -65,6 +65,7 @@ mapAliases ({
   aesop = throw "aesop has been removed from nixpkgs, as it was unmaintained"; # Added 2021-08-05
   ag = throw "'ag' has been renamed to/replaced by 'silver-searcher'"; # Converted to throw 2022-02-22
   aircrackng = throw "'aircrackng' has been renamed to/replaced by 'aircrack-ng'"; # Converted to throw 2022-02-22
+  airfield = throw "airfield has been removed due to being unmaintained"; # Added 2023-05-19
   airtame = throw "airtame has been removed due to being unmaintained"; # Added 2022-01-19
   aleth = throw "aleth (previously packaged as cpp_ethereum) has been removed; abandoned upstream"; # Added 2020-11-30
   alsaLib = alsa-lib; # Added 2021-06-09
@@ -812,6 +813,7 @@ mapAliases ({
   krename-qt5 = throw "'krename-qt5' has been renamed to/replaced by 'krename'"; # Converted to throw 2022-02-22
   krita-beta = krita; # moved from top-level 2021-12-23
   kube-aws = throw "kube-aws is deprecated and archived by upstream"; # Added 2022-04-05
+  kubei = kubeclarity; # Added 2023-05-20
   kubeless = throw "kubeless is deprecated and archived by upstream"; # Added 2022-04-05
   kubicorn = throw "kubicorn has been dropped due to the lack of maintenance from upstream since 2019"; # Added 2022-05-30
   kvm = throw "'kvm' has been renamed to/replaced by 'qemu_kvm'"; # Converted to throw 2022-02-22
@@ -1552,6 +1554,7 @@ mapAliases ({
 
   sourcetrail = throw "sourcetrail has been removed: abandoned by upstream"; # Added 2022-08-14
 
+  spacegun = throw "'spacegun' has been removed as unmaintained"; # Added 2023-05-20
   spaceOrbit = throw "'spaceOrbit' has been renamed to/replaced by 'space-orbit'"; # Converted to throw 2022-02-22
   spectral = neochat; # Added 2020-12-27
   speech_tools = throw "'speech_tools' has been renamed to/replaced by 'speech-tools'"; # Converted to throw 2022-02-22

@@ -423,6 +423,8 @@ with pkgs;
     python3 = python311;
   };
 
+  checkpwn = callPackage ../tools/misc/checkpwn { };
+
   chrysalis = callPackage ../applications/misc/chrysalis { };
 
   ciel = callPackage ../tools/package-management/ciel { };
@@ -666,6 +668,8 @@ with pkgs;
   enumerepo = callPackage ../tools/security/enumerepo {};
 
   erosmb = callPackage ../tools/security/erosmb { };
+
+  oauth2c = callPackage ../tools/security/oauth2c { };
 
   octosuite = callPackage ../tools/security/octosuite { };
 
@@ -1424,8 +1428,6 @@ with pkgs;
 
   aircrack-ng = callPackage ../tools/networking/aircrack-ng { };
 
-  airfield = callPackage ../tools/networking/airfield { };
-
   airgeddon = callPackage ../tools/networking/airgeddon { };
 
   apache-airflow = with python3.pkgs; toPythonApplication apache-airflow;
@@ -1451,7 +1453,7 @@ with pkgs;
 
   akku = callPackage ../tools/package-management/akku { };
 
-  albert = libsForQt5.callPackage ../applications/misc/albert { };
+  albert = qt6Packages.callPackage ../applications/misc/albert { };
 
   alice-lg = callPackage ../servers/alice-lg{ };
 
@@ -1697,7 +1699,9 @@ with pkgs;
 
   speedtest-rs = callPackage ../tools/networking/speedtest-rs { };
 
-  stargazer = callPackage ../servers/gemini/stargazer { };
+  stargazer = callPackage ../servers/gemini/stargazer {
+    inherit (darwin.apple_sdk.frameworks) Security;
+  };
 
   steamtinkerlaunch = callPackage ../tools/games/steamtinkerlaunch { };
 
@@ -2606,6 +2610,8 @@ with pkgs;
   cool-retro-term = libsForQt5.callPackage ../applications/terminal-emulators/cool-retro-term { };
 
   ctx = callPackage ../applications/terminal-emulators/ctx { };
+
+  darklua = callPackage ../development/tools/darklua { };
 
   darktile = callPackage ../applications/terminal-emulators/darktile { };
 
@@ -3698,7 +3704,7 @@ with pkgs;
 
   ssh-key-confirmer = callPackage ../tools/networking/ssh-key-confirmer { };
 
-  ssh-mitm = with python3Packages; toPythonApplication ssh-mitm;
+  ssh-mitm = callPackage ../tools/security/ssh-mitm { };
 
   sshchecker = callPackage ../tools/security/sshchecker { };
 
@@ -5357,6 +5363,8 @@ with pkgs;
 
   mandown = callPackage ../tools/misc/mandown { };
 
+  mantra = callPackage ../tools/security/mantra { };
+
   mapcidr = callPackage ../tools/misc/mapcidr { };
 
   maple-mono = (callPackage ../data/fonts/maple-font { }).Mono;
@@ -6189,6 +6197,8 @@ with pkgs;
 
   checkmake = callPackage ../development/tools/checkmake { };
 
+  cherrybomb = callPackage ../tools/security/cherrybomb { };
+
   chit = callPackage ../development/tools/chit { };
 
   chkrootkit = callPackage ../tools/security/chkrootkit { };
@@ -6243,12 +6253,7 @@ with pkgs;
 
   crlfuzz = callPackage ../tools/security/crlfuzz { };
 
-  hedgedoc = callPackage ../servers/web-apps/hedgedoc {
-    inherit (callPackage ../development/tools/yarn2nix-moretea/yarn2nix {
-      nodejs = nodejs_16;
-    }) mkYarnPackage;
-    nodejs = nodejs_16;
-  };
+  hedgedoc = callPackage ../servers/web-apps/hedgedoc { };
 
   colord = callPackage ../tools/misc/colord { };
 
@@ -7249,7 +7254,7 @@ with pkgs;
 
   # The latest version used by elasticsearch, logstash, kibana and the the beats from elastic.
   # When updating make sure to update all plugins or they will break!
-  elk7Version = "7.17.9";
+  elk7Version = "7.17.10";
 
   elasticsearch7 = callPackage ../servers/search/elasticsearch/7.x.nix {
     util-linux = util-linuxMinimal;
@@ -16756,17 +16761,15 @@ with pkgs;
     mbqn-source = buildPackages.mbqn.src;
 
     phase0 = callPackage ../development/interpreters/bqn/cbqn {
-      inherit (cbqn-bootstrap) stdenv;
+      inherit (cbqn-bootstrap) mbqn-source stdenv;
       genBytecode = false;
       bqn-path = null;
-      mbqn-source = null;
     };
 
     phase0-replxx = callPackage ../development/interpreters/bqn/cbqn {
-      inherit (cbqn-bootstrap) stdenv;
+      inherit (cbqn-bootstrap) mbqn-source stdenv;
       genBytecode = false;
       bqn-path = null;
-      mbqn-source = null;
       enableReplxx = true;
     };
 
@@ -18438,6 +18441,8 @@ with pkgs;
 
   gocd-server = callPackage ../development/tools/continuous-integration/gocd-server { };
 
+  gopatch = callPackage ../development/tools/misc/gopatch { };
+
   goredo = callPackage ../development/tools/build-managers/goredo { };
 
   gotify-server = callPackage ../servers/gotify { };
@@ -18626,7 +18631,7 @@ with pkgs;
 
   kube-prompt = callPackage ../development/tools/kube-prompt { };
 
-  kubei = callPackage ../tools/security/kubei { };
+  kubeclarity = callPackage ../tools/security/kubeclarity { };
 
   kubemq-community = callPackage ../servers/kubemq-community { };
 
@@ -19581,7 +19586,7 @@ with pkgs;
 
   armadillo = callPackage ../development/libraries/armadillo { };
 
-  arrayfire = callPackage ../development/libraries/arrayfire { };
+  arrayfire = darwin.apple_sdk_11_0.callPackage ../development/libraries/arrayfire { };
 
   arrow-cpp = callPackage ../development/libraries/arrow-cpp { };
 
@@ -27243,6 +27248,8 @@ with pkgs;
 
   gosec = callPackage ../development/tools/gosec { };
 
+  gotemplate = callPackage ../development/tools/gotemplate { };
+
   gotraceui = callPackage ../development/tools/gotraceui { };
 
   govers = callPackage ../development/tools/govers { };
@@ -31426,6 +31433,8 @@ with pkgs;
 
   i3-wk-switch = callPackage ../applications/window-managers/i3/wk-switch.nix { };
 
+  kitti3 = python3.pkgs.callPackage ../applications/window-managers/i3/kitti3.nix { };
+
   waybox = callPackage ../applications/window-managers/waybox { };
 
   workstyle = callPackage ../applications/window-managers/i3/workstyle.nix { };
@@ -32865,8 +32874,6 @@ with pkgs;
 
   storrent = callPackage ../applications/networking/p2p/storrent { };
 
-  spacegun = callPackage ../applications/networking/cluster/spacegun { };
-
   speedread = callPackage ../applications/misc/speedread { };
 
   station = callPackage ../applications/networking/station { };
@@ -33660,7 +33667,7 @@ with pkgs;
 
   quirc = callPackage ../tools/graphics/quirc { };
 
-  quisk = python39Packages.callPackage ../applications/radio/quisk { };
+  quisk = callPackage ../applications/radio/quisk { };
 
   quiterss = libsForQt5.callPackage ../applications/networking/newsreaders/quiterss { };
 
@@ -34954,6 +34961,7 @@ with pkgs;
   vscodium-fhsWithPackages = vscodium.fhsWithPackages;
 
   openvscode-server = callPackage ../servers/openvscode-server {
+    nodejs = nodejs_18;
     inherit (darwin.apple_sdk.frameworks) AppKit Cocoa Security;
     inherit (darwin) cctools;
   };
@@ -35718,6 +35726,8 @@ with pkgs;
     inherit (darwin) libobjc;
     inherit (darwin.apple_sdk.frameworks) IOKit;
   };
+
+  go-exploitdb = callPackage ../tools/security/go-exploitdb { };
 
   groestlcoin  = libsForQt5.callPackage ../applications/blockchains/groestlcoin {
     boost = boost17x;

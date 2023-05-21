@@ -86,6 +86,8 @@ mapAliases ({
   django_environ = django-environ; # added 2021-12-25
   django_extensions = django-extensions; # added 2022-01-09
   django_guardian = django-guardian; # added 2022-05-19
+  django_hijack = django-hijack; # added 2023-05-16
+  django_hijack_admin = django-hijack-admin; # added 2023-05-16
   django_modelcluster = django-modelcluster; # added 2022-04-02
   django_reversion = django-reversion; # added 2022-06-18
   django_polymorphic = django-polymorphic; # added 2022-05-24
@@ -161,6 +163,8 @@ mapAliases ({
   mailman = throw "Please use pkgs.mailman"; # added 2022-04-29
   mailman-hyperkitty = throw "Please use pkgs.mailmanPackages.mailman-hyperkitty"; # added 2022-04-29
   mailman-web = throw "Please use pkgs.mailman-web"; # added 2022-04-29
+  manticore = throw "manticore has been removed because its dependency wasm no longer builds and is unmaintained"; # added 2023-05-20
+  markerlib = throw "markerlib has been removed because it's abandoned since 2013"; # added 2023-05-19
   mistune_0_8 = throw "mistune_0_8 was removed because it was outdated and insecure"; # added 2022-08-12
   mistune_2_0 = mistune; # added 2022-08-12
   mox = throw "mox was removed because it is unmaintained"; # added 2023-02-21
@@ -222,6 +226,7 @@ mapAliases ({
   Pyro4 = pyro4; # added 2023-02-19
   Pyro5 = pyro5; # added 2023-02-19
   PyRSS2Gen = pyrss2gen; # added 2023-02-19
+  pysha3 = throw "pysha3 has been removed, use safe-pysha3 instead"; # added 2023-05-20
   pysmart-smartx = pysmart; # added 2021-10-22
   pysparse = throw "pysparse has been abandoned upstream."; # added 2023-02-28
   pyspotify = throw "pyspotify has been removed because Spotify stopped supporting libspotify"; # added 2022-05-29
@@ -276,6 +281,7 @@ mapAliases ({
   selectors34 = throw "selectors34 has been removed: functionality provided by Python itself; archived by upstream."; # added 2021-06-10
   setuptools_scm = setuptools-scm; # added 2021-06-03
   sharkiqpy = sharkiq; # added 2022-05-21
+  ssh-mitm = throw "ssh-mitm was removed in favor of the top-level ssh-mitm"; # added 2023-05-09
   smart_open = smart-open; # added 2021-03-14
   smmap2 = throw "smmap2 has been deprecated, use smmap instead."; # added 2020-03-14
   somecomfort = throw "somecomfort was removed because Home Assistant switched to aiosomecomfort"; # added 2023-02-01
@@ -307,6 +313,7 @@ mapAliases ({
   uproot3-methods = throw "uproot3-methods has been removed"; # added 2022-12-13
   virtual-display = throw "virtual-display has been renamed to PyVirtualDisplay"; # added 2023-01-07
   Wand = wand; # added 2022-11-13
+  wasm = throw "wasm has been removed because it no longer builds and is unmaintained"; # added 2023-05-20
   WazeRouteCalculator = wazeroutecalculator; # added 2021-09-29
   weakrefmethod = throw "weakrefmethod was removed since it's not needed in Python >= 3.4"; # added 2022-12-01
   webapp2 = throw "webapp2 is unmaintained since 2012"; # added 2022-05-29
