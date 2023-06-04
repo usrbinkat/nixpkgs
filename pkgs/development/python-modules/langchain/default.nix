@@ -31,6 +31,7 @@
 , azure-core
 , elasticsearch
 , opensearch-py
+, google-search-results
 , faiss
 , spacy
 , nltk
@@ -73,7 +74,7 @@
 
 buildPythonPackage rec {
   pname = "langchain";
-  version = "0.0.180";
+  version = "0.0.188";
   format = "pyproject";
 
   disabled = pythonOlder "3.8";
@@ -82,7 +83,7 @@ buildPythonPackage rec {
     owner = "hwchase17";
     repo = "langchain";
     rev = "refs/tags/v${version}";
-    hash = "sha256-5ZA5CXS9+NCyOXGbjgGk+iNCF/B2Wm4xRpR6t5uJ+yg=";
+    hash = "sha256-hf0pfWPXdutUKDzt56Uc0Q02TzScLAegQZ2gdR2IM/c=";
   };
 
   postPatch = ''
@@ -160,7 +161,7 @@ buildPythonPackage rec {
       manifest-ml
       elasticsearch
       opensearch-py
-      # google-search-results
+      google-search-results
       faiss
       sentence-transformers
       transformers
