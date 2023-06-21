@@ -20,6 +20,8 @@
 
   obs-command-source = callPackage ./obs-command-source.nix { };
 
+  obs-gradient-source = callPackage ./obs-gradient-source.nix { };
+
   obs-gstreamer = callPackage ./obs-gstreamer.nix { };
 
   obs-hyperion = qt6Packages.callPackage ./obs-hyperion/default.nix { };
@@ -29,6 +31,8 @@
   obs-move-transition = callPackage ./obs-move-transition.nix { };
 
   obs-multi-rtmp = qt6Packages.callPackage ./obs-multi-rtmp { };
+
+  obs-mute-filter = callPackage ./obs-mute-filter.nix { };
 
   obs-ndi = qt6Packages.callPackage ./obs-ndi { };
 
@@ -42,9 +46,15 @@
 
   obs-source-record = callPackage ./obs-source-record.nix { };
 
+  obs-source-switcher = callPackage ./obs-source-switcher.nix { };
+
   obs-teleport = callPackage ./obs-teleport { };
 
+  obs-transition-table = qt6Packages.callPackage ./obs-transition-table.nix { };
+
   obs-vaapi = callPackage ./obs-vaapi { };
+
+  obs-vertical-canvas = qt6Packages.callPackage ./obs-vertical-canvas.nix { };
 
   obs-vintage-filter = callPackage ./obs-vintage-filter.nix { };
 
@@ -52,7 +62,7 @@
     obs-vkcapture32 = pkgsi686Linux.obs-studio-plugins.obs-vkcapture;
   };
 
-  obs-websocket = throw "obs-websocket has been removed: Functionality has been integrated into obs-studio itself.";
+  obs-websocket = qt6Packages.callPackage ./obs-websocket.nix { }; # Websocket 4.x compatibility for OBS Studio 28+
 
   wlrobs = callPackage ./wlrobs.nix { };
 }
