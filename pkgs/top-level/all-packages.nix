@@ -5110,6 +5110,8 @@ with pkgs;
 
   gdrive = callPackage ../applications/networking/gdrive { };
 
+  gdrive3 = callPackage ../applications/networking/gdrive3 { };
+
   gdu = callPackage ../tools/system/gdu { };
 
   gfxreconstruct = callPackage ../tools/graphics/gfxreconstruct { };
@@ -11567,6 +11569,8 @@ with pkgs;
   popfile = callPackage ../tools/text/popfile { };
 
   poretools = callPackage ../applications/science/biology/poretools { };
+
+  porsmo = callPackage ../applications/misc/porsmo { };
 
   pantum-driver = callPackage ../misc/drivers/pantum-driver {
     libjpeg8 = libjpeg.override { enableJpeg8 = true; };
