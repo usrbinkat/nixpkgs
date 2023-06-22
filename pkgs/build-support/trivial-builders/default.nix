@@ -145,7 +145,7 @@ rec {
     runCommand name
       { inherit text executable checkPhase allowSubstitutes preferLocalBuild;
         passAsFile = [ "text" ];
-        meta = lib.optionalAttrs (executable && matches != null) {
+        meta = lib.optionalAttrs (toString executable != "" && matches != null) {
           mainProgram = lib.head matches;
         } // meta;
       }
