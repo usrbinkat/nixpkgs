@@ -40,6 +40,8 @@
 
   obs-pipewire-audio-capture = callPackage ./obs-pipewire-audio-capture.nix { };
 
+  obs-scale-to-sound = callPackage ./obs-scale-to-sound.nix { };
+
   obs-shaderfilter = qt6Packages.callPackage ./obs-shaderfilter.nix { };
 
   obs-source-clone = callPackage ./obs-source-clone.nix { };
@@ -49,6 +51,8 @@
   obs-source-switcher = callPackage ./obs-source-switcher.nix { };
 
   obs-teleport = callPackage ./obs-teleport { };
+
+  obs-text-pthread = callPackage ./obs-text-pthread.nix { };
 
   obs-transition-table = qt6Packages.callPackage ./obs-transition-table.nix { };
 

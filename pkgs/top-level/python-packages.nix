@@ -750,6 +750,8 @@ self: super: with self; {
 
   async-timeout = callPackage ../development/python-modules/async_timeout { };
 
+  async-tkinter-loop = callPackage ../development/python-modules/async-tkinter-loop { };
+
   asyncua = callPackage ../development/python-modules/asyncua { };
 
   async-upnp-client = callPackage ../development/python-modules/async-upnp-client { };
@@ -2505,8 +2507,6 @@ self: super: with self; {
 
   derpconf = callPackage ../development/python-modules/derpconf { };
 
-  descartes = callPackage ../development/python-modules/descartes { };
-
   desktop-notifier = callPackage ../development/python-modules/desktop-notifier { };
 
   detect-secrets = callPackage ../development/python-modules/detect-secrets { };
@@ -2736,8 +2736,6 @@ self: super: with self; {
   django-health-check = callPackage ../development/python-modules/django-health-check { };
 
   django-hierarkey = callPackage ../development/python-modules/django-hierarkey { };
-
-  django-hijack-admin = callPackage ../development/python-modules/django-hijack-admin { };
 
   django-hijack = callPackage ../development/python-modules/django-hijack { };
 
@@ -9202,6 +9200,21 @@ self: super: with self; {
   pyqt6-sip = callPackage ../development/python-modules/pyqt/pyqt6-sip.nix { };
 
   pyqt6-webengine = callPackage ../development/python-modules/pyqt6-webengine.nix { };
+
+  pyqt3d = pkgs.libsForQt5.callPackage ../development/python-modules/pyqt3d {
+    inherit (self) buildPythonPackage pyqt5 pyqt-builder python pythonOlder
+      setuptools sip;
+  };
+
+  pyqtchart = pkgs.libsForQt5.callPackage ../development/python-modules/pyqtchart {
+    inherit (self) buildPythonPackage pyqt5 pyqt-builder python pythonOlder
+      setuptools sip;
+  };
+
+  pyqtdatavisualization = pkgs.libsForQt5.callPackage ../development/python-modules/pyqtdatavisualization {
+    inherit (self) buildPythonPackage pyqt5 pyqt-builder python pythonOlder
+      setuptools sip;
+  };
 
   pyqtgraph = callPackage ../development/python-modules/pyqtgraph { };
 
