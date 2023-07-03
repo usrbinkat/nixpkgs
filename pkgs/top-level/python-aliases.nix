@@ -194,6 +194,7 @@ mapAliases ({
   pam = python-pam; # added 2020-09-07.
   PasteDeploy = pastedeploy; # added 2021-10-07
   pathpy = path; # added 2022-04-12
+  pdfposter = throw "pdfposter was promoted to a top-level attribute"; # Added 2023-06-29
   pdfminer = pdfminer-six; # added 2022-05-25
   pep257 = pydocstyle; # added 2022-04-12
   poetry = throw "poetry was promoted to a top-level attribute, use poetry-core to build Python packages"; # added 2023-01-09
@@ -279,9 +280,11 @@ mapAliases ({
   pytwitchapi = twitchapi; # added 2022-03-07
   pyvcf = throw "pyvcf has been removed, it was using setuptools 2to3 translation feature, which has been removed in setuptools 58"; # added 2023-05-19
   PyVirtualDisplay = pyvirtualdisplay; # added 2023-02-19
+  pywick = throw "pywick has been removed, since it is no longer maintained"; # added 2023-07-01
   qasm2image = throw "qasm2image is no longer maintained (since November 2018), and is not compatible with the latest pythonPackages.qiskit versions."; # added 2020-12-09
   Quandl = quandl; # added 2023-02-19
   qiskit-aqua = throw "qiskit-aqua has been removed due to deprecation, with its functionality moved to different qiskit packages";
+  rabbitpy = throw "rabbitpy has been removed, since it is unmaintained and broken"; # added 2023-07-01
   rdflib-jsonld = throw "rdflib-jsonld is not compatible with rdflib 6"; # added 2021-11-05
   retworkx = rustworkx; # added 2023-05-14
   repeated_test = repeated-test; # added 2022-11-15
@@ -313,6 +316,7 @@ mapAliases ({
   sphinx_rtd_theme = sphinx-rtd-theme; # added 2022-08-03
   sphinxcontrib-autoapi = sphinx-autoapi; # added 2023-02=28
   sphinxcontrib_plantuml = sphinxcontrib-plantuml; # added 2021-08-02
+  sphinx-navtree = throw "sphinx-navtree has been removed since it is not compatible with sphinx 3.3 and unmaintained"; # added 2023-07-03
   sqlalchemy_migrate = sqlalchemy-migrate; # added 2021-10-28
   SQLAlchemy-ImageAttach = throw "sqlalchemy-imageattach has been removed as it is incompatible with sqlalchemy 1.4 and unmaintained"; # added 2022-04-23
   suds-jurko = throw "suds-jurko has been removed, it was using setuptools 2to3 translation feature, which has been removed in setuptools 58"; # added 2023-02-27
