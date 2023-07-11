@@ -15,14 +15,14 @@ let
 in
 python.pkgs.buildPythonApplication rec {
   pname = "tts";
-  version = "0.15.0";
+  version = "0.15.6";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "coqui-ai";
     repo = "TTS";
     rev = "refs/tags/v${version}";
-    hash = "sha256-pu0MqNXNQfvxo2VHpiEYIz1OvplydCYPKU/NsZD0mJw=";
+    hash = "sha256-ZEmj0D+q2/UpDTEZDPb13BKiNRUcZsJmJRWOCq+8CUk=";
   };
 
   postPatch = let
