@@ -634,7 +634,7 @@ with pkgs;
 
   buildcatrust = with python3.pkgs; toPythonApplication buildcatrust;
 
-  probe-rs-cli = callPackage ../development/tools/rust/probe-rs-cli {
+  probe-rs = callPackage ../development/tools/rust/probe-rs {
     inherit (darwin.apple_sdk.frameworks) AppKit;
     inherit (darwin) DarwinTools;
   };
@@ -2739,6 +2739,10 @@ with pkgs;
   xplorer = callPackage ../applications/file-managers/xplorer { };
 
   ytree = callPackage ../applications/file-managers/ytree { };
+
+  johnny-reborn-engine = callPackage ../applications/misc/johnny-reborn { };
+
+  johnny-reborn = callPackage ../applications/misc/johnny-reborn/with-data.nix { };
 
   ### APPLICATIONS/TERMINAL-EMULATORS
 
@@ -6095,6 +6099,8 @@ with pkgs;
 
   replay-sorcery = callPackage ../tools/video/replay-sorcery { };
 
+  recyclarr = callPackage ../tools/video/recyclarr { };
+
   tsduck = callPackage ../tools/video/tsduck { };
 
   ripasso-cursive = callPackage ../tools/security/ripasso/cursive.nix {
@@ -8691,6 +8697,8 @@ with pkgs;
 
   ham = pkgs.perlPackages.ham;
 
+  hamsket = callPackage ../applications/networking/instant-messengers/hamsket { };
+
   hardinfo = callPackage ../tools/system/hardinfo { };
 
   harmonia = callPackage ../tools/package-management/harmonia { };
@@ -8916,7 +8924,7 @@ with pkgs;
   inherit (callPackages ../tools/filesystems/irods rec {
     stdenv = llvmPackages.libcxxStdenv;
     libcxx = llvmPackages.libcxx;
-    boost = boost17x.override { inherit stdenv; };
+    boost = boost179.override { inherit stdenv; };
     fmt = fmt_8.override { inherit stdenv; };
     nanodbc_llvm = nanodbc.override { inherit stdenv; };
     avro-cpp_llvm = avro-cpp.override { inherit stdenv boost; };
@@ -11229,7 +11237,7 @@ with pkgs;
   oshka = callPackage ../development/tools/oshka { };
 
   osl = libsForQt5.callPackage ../development/compilers/osl {
-    boost = boost17x;
+    boost = boost179;
   };
 
   osqp = callPackage ../development/libraries/science/math/osqp { };
@@ -14501,7 +14509,7 @@ with pkgs;
   };
 
   xtreemfs = callPackage ../tools/filesystems/xtreemfs {
-    boost = boost17x;
+    boost = boost179;
   };
 
   xurls = callPackage ../tools/text/xurls { };
@@ -15371,6 +15379,14 @@ with pkgs;
         langCC = false;
         libcCross = libcCross1;
         targetPackages.stdenv.cc.bintools = binutilsNoLibc;
+        enableShared =
+          stdenv.targetPlatform.hasSharedLibraries
+
+          # temporarily disabled due to breakage;
+          # see https://github.com/NixOS/nixpkgs/pull/243249
+          && !stdenv.targetPlatform.isWindows
+          && !(stdenv.targetPlatform.useLLVM or false)
+        ;
       };
       bintools = binutilsNoLibc;
       libc = libcCross1;
@@ -16798,18 +16814,10 @@ with pkgs;
   cargo-dephell = callPackage ../development/tools/rust/cargo-dephell { };
   cargo-diet = callPackage ../development/tools/rust/cargo-diet { };
   cargo-dist = callPackage ../development/tools/rust/cargo-dist { };
-  cargo-embed = callPackage ../development/tools/rust/cargo-embed {
-    inherit (darwin.apple_sdk.frameworks) AppKit;
-    inherit (darwin) DarwinTools;
-  };
   cargo-espmonitor = callPackage ../development/tools/rust/cargo-espmonitor { };
   cargo-expand = callPackage ../development/tools/rust/cargo-expand { };
   cargo-hakari = callPackage ../development/tools/rust/cargo-hakari { };
   cargo-feature = callPackage ../development/tools/rust/cargo-feature { };
-  cargo-flash = callPackage ../development/tools/rust/cargo-flash {
-    inherit (darwin.apple_sdk.frameworks) AppKit;
-    inherit (darwin) DarwinTools;
-  };
   cargo-fund = callPackage ../development/tools/rust/cargo-fund {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
@@ -18069,6 +18077,8 @@ with pkgs;
   };
 
   nls = callPackage ../development/tools/language-servers/nls { };
+
+  openscad-lsp = callPackage ../development/tools/language-servers/openscad-lsp { };
 
   pylyzer = callPackage ../development/tools/language-servers/pylyzer { };
 
@@ -20258,9 +20268,7 @@ with pkgs;
     boost182
   ;
 
-  boost17x = boost179;
-  boost18x = boost182;
-  boost = boost17x;
+  boost = boost179;
 
   boost_process = callPackage ../development/libraries/boost-process { };
 
@@ -21569,8 +21577,8 @@ with pkgs;
   hpp-fcl = callPackage ../development/libraries/hpp-fcl { };
 
   hpx = callPackage ../development/libraries/hpx {
-    boost = boost17x;
-    asio = asio.override { boost = boost17x; };
+    boost = boost179;
+    asio = asio.override { boost = boost179; };
   };
 
   hspell = callPackage ../development/libraries/hspell { };
@@ -21968,6 +21976,10 @@ with pkgs;
   libavc1394 = callPackage ../development/libraries/libavc1394 { };
 
   libavif = callPackage ../development/libraries/libavif { };
+
+  libayatana-common = callPackage ../development/libraries/libayatana-common {
+    inherit (lomiri) cmake-extras;
+  };
 
   libb2 = callPackage ../development/libraries/libb2 { };
 
@@ -26407,14 +26419,14 @@ with pkgs;
 
   mongodb-4_4 = callPackage ../servers/nosql/mongodb/4.4.nix {
     sasl = cyrus_sasl;
-    boost = boost17x.override { enableShared = false; };
+    boost = boost179.override { enableShared = false; };
     inherit (darwin) cctools;
     inherit (darwin.apple_sdk.frameworks) CoreFoundation Security;
   };
 
   mongodb-5_0 = callPackage ../servers/nosql/mongodb/5.0.nix {
     sasl = cyrus_sasl;
-    boost = boost17x.override { enableShared = false; };
+    boost = boost179.override { enableShared = false; };
     inherit (darwin) cctools;
     inherit (darwin.apple_sdk.frameworks) CoreFoundation Security;
   };
@@ -27253,6 +27265,8 @@ with pkgs;
   dsd = callPackage ../applications/radio/dsd { };
 
   dstat = callPackage ../os-specific/linux/dstat { };
+
+  esdm = callPackage ../os-specific/linux/esdm { };
 
   evdev-proto = callPackage ../os-specific/bsd/freebsd/evdev-proto { };
 
@@ -29759,6 +29773,10 @@ with pkgs;
   masterpdfeditor = libsForQt5.callPackage ../applications/misc/masterpdfeditor { };
 
   masterpdfeditor4 = libsForQt5.callPackage ../applications/misc/masterpdfeditor4 { };
+
+  master_me = callPackage ../applications/audio/master_me {
+    inherit (darwin.apple_sdk.frameworks) Cocoa;
+  };
 
   pdfstudio2021 = callPackage ../applications/misc/pdfstudio {
     year = "2021";
@@ -36347,19 +36365,19 @@ with pkgs;
 
   bitcoin  = libsForQt5.callPackage ../applications/blockchains/bitcoin {
     stdenv = if stdenv.isDarwin then darwin.apple_sdk_11_0.stdenv else stdenv;
-    boost = boost17x;
+    boost = boost179;
     withGui = true;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
 
   bitcoind = callPackage ../applications/blockchains/bitcoin {
-    boost = boost17x;
+    boost = boost179;
     withGui = false;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
 
   bitcoind-knots = callPackage ../applications/blockchains/bitcoin-knots {
-    boost = boost17x;
+    boost = boost179;
     withGui = false;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
@@ -36381,11 +36399,11 @@ with pkgs;
   besu = callPackage ../applications/blockchains/besu { };
 
   bitcoin-abc  = libsForQt5.callPackage ../applications/blockchains/bitcoin-abc {
-    boost = boost17x;
+    boost = boost179;
     withGui = true;
   };
   bitcoind-abc = callPackage ../applications/blockchains/bitcoin-abc {
-    boost = boost17x;
+    boost = boost179;
     mkDerivation = stdenv.mkDerivation;
     withGui = false;
   };
@@ -36412,11 +36430,11 @@ with pkgs;
   dcrwallet = callPackage ../applications/blockchains/dcrwallet { };
 
   dogecoin  = libsForQt5.callPackage ../applications/blockchains/dogecoin {
-    boost = boost17x;
+    boost = boost179;
     withGui = true;
   };
   dogecoind = callPackage ../applications/blockchains/dogecoin {
-    boost = boost17x;
+    boost = boost179;
     withGui = false;
   };
 
@@ -36463,13 +36481,13 @@ with pkgs;
 
   groestlcoin  = libsForQt5.callPackage ../applications/blockchains/groestlcoin {
     stdenv = darwin.apple_sdk_11_0.stdenv;
-    boost = boost17x;
+    boost = boost179;
     withGui = true;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
 
   groestlcoind = callPackage ../applications/blockchains/groestlcoin {
-    boost = boost17x;
+    boost = boost179;
     inherit (darwin) autoSignDarwinBinariesHook;
   };
 
@@ -36506,11 +36524,11 @@ with pkgs;
   };
 
   monero-gui = libsForQt5.callPackage ../applications/blockchains/monero-gui {
-    boost = boost17x;
+    boost = boost179;
   };
 
   oxen = callPackage ../applications/blockchains/oxen
-    { stdenv = gcc10StdenvCompat; boost = boost17x; };
+    { stdenv = gcc10StdenvCompat; boost = boost179; };
 
   masari = callPackage ../applications/blockchains/masari { };
 
@@ -36539,7 +36557,7 @@ with pkgs;
   stellar-core = callPackage ../applications/blockchains/stellar-core { };
 
   sumokoin = callPackage ../applications/blockchains/sumokoin {
-    boost = boost17x;
+    boost = boost179;
   };
 
   solana-cli = callPackage ../applications/blockchains/solana { };
@@ -36565,11 +36583,11 @@ with pkgs;
   torq = callPackage ../applications/blockchains/torq { };
 
   vertcoin  = libsForQt5.callPackage ../applications/blockchains/vertcoin {
-    boost = boost17x;
+    boost = boost179;
     withGui = true;
   };
   vertcoind = callPackage ../applications/blockchains/vertcoin {
-    boost = boost17x;
+    boost = boost179;
     withGui = false;
   };
 
@@ -39486,6 +39504,8 @@ with pkgs;
 
   terminal-parrot = callPackage ../applications/misc/terminal-parrot { };
 
+  epsonscan2 = pkgs.libsForQt5.callPackage ../misc/drivers/epsonscan2 { };
+
   epson-alc1100 = callPackage ../misc/drivers/epson-alc1100 { };
 
   epson-escpr = callPackage ../misc/drivers/epson-escpr { };
@@ -40511,6 +40531,8 @@ with pkgs;
   tusk = callPackage ../applications/office/tusk { };
 
   trufflehog = callPackage ../tools/security/trufflehog { };
+
+  tunnelx = callPackage ../applications/gis/tunnelx { };
 
   tvbrowser = callPackage ../applications/misc/tvbrowser { };
 
