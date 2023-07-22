@@ -1,5 +1,5 @@
 { fetchurl, lib, stdenv, zstd
-, autoPatchelfHook, gcc-unwrapped
+, testers, buck2 # for passthru.tests
 }:
 
 let
@@ -26,15 +26,11 @@ let
   suffix = {
     x86_64-darwin  = "x86_64-apple-darwin";
     aarch64-darwin = "aarch64-apple-darwin";
-    # TODO (aseipp): there's an aarch64-linux musl build of buck2, but not a
-    # x86_64-linux musl build. keep things consistent for now and use glibc
-    # builds for both; but we should fix this in the future to be less fragile;
-    # we can then remove autoPatchelfHook.
-    x86_64-linux   = "x86_64-unknown-linux-gnu";
-    aarch64-linux  = "aarch64-unknown-linux-gnu";
+    x86_64-linux   = "x86_64-unknown-linux-musl";
+    aarch64-linux  = "aarch64-unknown-linux-musl";
   }."${stdenv.hostPlatform.system}" or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 
-  buck2-version = "2023-07-11";
+  buck2-version = "2023-07-18";
   src =
     let
       hashes = builtins.fromJSON (builtins.readFile ./hashes.json);
@@ -47,33 +43,45 @@ stdenv.mkDerivation {
   version = "unstable-${buck2-version}"; # TODO (aseipp): kill 'unstable' once a non-prerelease is made
   inherit src;
 
-  buildInputs = lib.optionals stdenv.isLinux [ gcc-unwrapped ]; # need libgcc_s.so.1 for patchelf
-  nativeBuildInputs = [ zstd ]
-    # TODO (aseipp): move to musl build and nuke this?
-    ++ lib.optionals stdenv.isLinux [ autoPatchelfHook ];
+  nativeBuildInputs = [ zstd ];
 
+  doCheck = true;
   dontConfigure = true;
+  dontStrip = true;
+
   unpackPhase = "unzstd ${src} -o ./buck2";
   buildPhase = "chmod +x ./buck2";
+  checkPhase = "./buck2 --version";
   installPhase = ''
     mkdir -p $out/bin
     install -D buck2 $out/bin/buck2
   '';
 
-  # NOTE (aseipp): use installCheckPhase instead of checkPhase so that
-  # autoPatchelfHook kicks in first.
-  doInstallCheck = true;
-  installCheckPhase = "$out/bin/buck2 --version";
+  passthru = {
+    updateScript = ./update.sh;
+    tests = testers.testVersion {
+      package = buck2;
 
-  passthru.updateScript = ./update.sh;
+      # NOTE (aseipp): the buck2 --version command doesn't actually print out
+      # the given version tagged in the release, but a hash, but not the git
+      # hash; the entire version logic is bizarrely specific to buck2, and needs
+      # to be reworked the open source build to behave like expected. in the
+      # mean time, it *does* always print out 'buck2 <hash>...' so we can just
+      # match on "buck2"
+      version = "buck2";
+    };
+  };
+
   meta = with lib; {
     description = "Fast, hermetic, multi-language build system";
     homepage = "https://buck2.build";
+    changelog = "https://github.com/facebook/buck2/releases/tag/${buck2-version}";
     license = with licenses; [ asl20 /* or */ mit ];
+    mainProgram = "buck2";
+    maintainers = with maintainers; [ thoughtpolice ];
     platforms = [
       "x86_64-linux" "aarch64-linux"
       "x86_64-darwin" "aarch64-darwin"
     ];
-    maintainers = with maintainers; [ thoughtpolice ];
   };
 }
