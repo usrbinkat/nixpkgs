@@ -583,7 +583,7 @@ class Machine:
         # While sh is bash on NixOS, this is not the case for every distro.
         # We explicitly call bash here to allow for the driver to boot other distros as well.
         out_command = (
-            f"{timeout_str} bash -c {shlex.quote(command)} | (base64 --wrap 0; echo)\n"
+            f"{timeout_str} bash -c {shlex.quote(command)} | (base64 -w 0; echo)\n"
         )
 
         assert self.shell
@@ -833,6 +833,9 @@ class Machine:
             # TODO: do we want to bail after a set number of attempts?
             while not shell_ready(timeout_secs=30):
                 self.log("Guest root shell did not produce any data yet...")
+                self.log(
+                    "  To debug, enter the VM and run 'systemctl status backdoor.service'."
+                )
 
             while True:
                 chunk = self.shell.recv(1024)
