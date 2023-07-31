@@ -9047,6 +9047,12 @@
     githubId = 524268;
     name = "Koral";
   };
+  koralowiec = {
+    email = "qnlgzyrw@anonaddy.me";
+    github = "koralowiec";
+    githubId = 36413794;
+    name = "Arek Kalandyk";
+  };
   koslambrou = {
     email = "koslambrou@gmail.com";
     github = "koslambrou";
