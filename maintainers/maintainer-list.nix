@@ -418,6 +418,12 @@
     githubId = 1250775;
     name = "Adolfo E. García Castro";
   };
+  adriandole = {
+    email = "adrian@dole.tech";
+    github = "adriandole";
+    githubId = 25236206;
+    name = "Adrian Dole";
+  };
   AdsonCicilioti = {
     name = "Adson Cicilioti";
     email = "adson.cicilioti@live.com";
@@ -643,6 +649,13 @@
     github = "aldoborrero";
     githubId = 82811;
     name = "Aldo Borrero";
+  };
+  alejandrosame = {
+    email = "alejandrosanchzmedina@gmail.com";
+    matrix = "@alejandrosame:matrix.org";
+    github = "alejandrosame";
+    githubId = 1078000;
+    name = "Alejandro Sánchez Medina";
   };
   aleksana = {
     email = "me@aleksana.moe";
@@ -1154,6 +1167,9 @@
     githubId = 48802534;
     name = "Anselm Schüler";
     matrix = "@schuelermine:matrix.org";
+    keys = [{
+      fingerprint = "CDBF ECA8 36FE E340 1CEB  58FF BA34 EE1A BA3A 0955";
+    }];
   };
   anthonyroussel = {
     email = "anthony@roussel.dev";
@@ -2592,7 +2608,7 @@
   };
   cafkafk = {
     email = "christina@cafkafk.com";
-    matrix = "@cafkafk:m.cafkafk.com";
+    matrix = "@cafkafk:nixos.dev";
     name = "Christina Sørensen";
     github = "cafkafk";
     githubId = 89321978;
@@ -2601,7 +2617,7 @@
         fingerprint = "7B9E E848 D074 AE03 7A0C  651A 8ED4 DEF7 375A 30C8";
       }
       {
-        fingerprint = "208A 2A66 8A2F CDE7 B5D3 8F64 CDDC 792F 6552 51ED";
+        fingerprint = "208A 2A66 8A2F CDE7 B5D3  8F64 CDDC 792F 6552 51ED";
       }
     ];
   };
@@ -2774,6 +2790,12 @@
     github = "avdv";
     githubId = 3471749;
     name = "Claudio Bley";
+  };
+  cbourjau = {
+    email = "christianb@posteo.de";
+    github = "cbourjau";
+    githubId = 3288058;
+    name = "Christian Bourjau";
   };
   cbrewster = {
     email = "cbrewster@hey.com";
@@ -6054,6 +6076,12 @@
       fingerprint = "D0CF 440A A703 E0F9 73CB  A078 82BB 70D5 41AE 2DB4";
     }];
   };
+  gerg-l = {
+    email = "gregleyda@proton.me";
+    github = "Gerg-L";
+    githubId = 88247690;
+    name = "Greg Leyda";
+  };
   geri1701 = {
     email = "geri@sdf.org";
     github = "geri1701";
@@ -7730,6 +7758,13 @@
     githubId = 1608697;
     name = "Jens Binkert";
   };
+  jeremiahs = {
+    email = "jeremiah@secrist.xyz";
+    github = "JeremiahSecrist";
+    githubId = 26032621;
+    matrix = "@jeremiahs:matrix.org";
+    name = "Jeremiah Secrist";
+  };
   jeremyschlatter = {
     email = "github@jeremyschlatter.com";
     github = "jeremyschlatter";
@@ -8463,6 +8498,12 @@
     githubId = 662666;
     name = "Justinas Stankevičius";
   };
+  justinlime = {
+    email = "justinlime1999@gmail.com";
+    github = "justinlime";
+    githubId = 119710965;
+    name = "Justin Fields";
+  };
   justinlovinger = {
     email = "git@justinlovinger.com";
     github = "JustinLovinger";
@@ -8706,6 +8747,11 @@
     github = "kephas";
     githubId = 762421;
     name = "Pierre Thierry";
+  };
+  keto = {
+    github = "TheRealKeto";
+    githubId = 24854941;
+    name = "Keto";
   };
   ketzacoatl = {
     email = "ketzacoatl@protonmail.com";
@@ -9893,6 +9939,15 @@
     githubId = 1168435;
     name = "Ludovic Courtès";
   };
+  ludovicopiero = {
+    email = "ludovicopiero@pm.me";
+    github = "ludovicopiero";
+    githubId = 44255157;
+    name = "Ludovico Piero";
+    keys = [{
+      fingerprint = "72CA 4F61 46C6 0DAB 6193  4D35 3911 DD27 6CFE 779C";
+    }];
+  };
   lufia = {
     email = "lufia@lufia.org";
     github = "lufia";
@@ -10696,12 +10751,6 @@
     github = "CajuM";
     githubId = 10420834;
     name = "Mihai-Drosi Caju";
-  };
-  mcbeth = {
-    email = "mcbeth@broggs.org";
-    github = "mcbeth";
-    githubId = 683809;
-    name = "Jeffrey Brent McBeth";
   };
   mccurdyc = {
     email = "mccurdyc22@gmail.com";
@@ -15525,6 +15574,12 @@
     github = "skykanin";
     githubId = 3789764;
     name = "skykanin";
+  };
+  slbtty = {
+    email = "shenlebantongying@gmail.com";
+    github = "shenlebantongying";
+    githubId = 20123683;
+    name = "Shenleban Tongying";
   };
   sleexyz = {
     email = "freshdried@gmail.com";
