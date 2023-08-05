@@ -509,6 +509,12 @@ with pkgs;
 
   colorpicker = callPackage ../tools/misc/colorpicker { };
 
+  colorstorm = callPackage ../applications/misc/colorstorm {
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_9;
+    };
+  };
+
   comedilib = callPackage ../development/libraries/comedilib {  };
 
   commix = callPackage ../tools/security/commix { };
@@ -1806,6 +1812,8 @@ with pkgs;
 
   kubevirt = callPackage ../tools/virtualization/kubevirt { };
 
+  lektor = callPackage ../tools/misc/lektor { };
+
   licenseclassifier = callPackage ../development/tools/misc/licenseclassifier { };
 
   license-cli = callPackage ../tools/misc/license-cli { };
@@ -1815,6 +1823,8 @@ with pkgs;
   linux-router = callPackage ../tools/networking/linux-router { };
 
   linux-router-without-wifi = linux-router.override { useWifiDependencies = false; };
+
+  markdownlint-cli = callPackage ../tools/text/markdownlint-cli { };
 
   mbidled = callPackage ../tools/networking/mbidled { };
 
@@ -3358,7 +3368,7 @@ with pkgs;
     httpServer = true;
   };
 
-  antennas = nodePackages.antennas;
+  antennas = callPackage ../servers/antennas { };
 
   apg = callPackage ../tools/security/apg { };
 
@@ -3455,7 +3465,7 @@ with pkgs;
 
   calls = callPackage ../applications/networking/calls { };
 
-  inherit (nodePackages) castnow;
+  castnow = callPackage ../tools/networking/castnow { };
 
   castty = callPackage ../tools/misc/castty { };
 
@@ -5883,7 +5893,7 @@ with pkgs;
 
   mq-cli = callPackage ../tools/system/mq-cli { };
 
-  mrkd = with python3Packages; toPythonApplication mrkd;
+  mrkd = callPackage ../tools/text/mrkd { };
 
   naproche = callPackage ../applications/science/logic/naproche { };
 
@@ -6114,7 +6124,9 @@ with pkgs;
   river = callPackage ../applications/window-managers/river { };
 
   rivercarro = callPackage ../applications/misc/rivercarro {
-    zig = buildPackages.zig_0_9;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_9;
+    };
   };
 
   river-luatile = callPackage ../applications/misc/river-luatile{ };
@@ -18188,6 +18200,8 @@ with pkgs;
 
   espup = callPackage ../development/tools/espup { };
 
+  karma-runner = callPackage ../development/tools/karma-runner { };
+
   phpunit = callPackage ../development/tools/misc/phpunit { };
 
   teller = callPackage ../development/tools/teller { };
@@ -18261,7 +18275,9 @@ with pkgs;
   vscode-langservers-extracted = callPackage ../development/tools/language-servers/vscode-langservers-extracted { };
 
   zls = callPackage ../development/tools/language-servers/zls {
-    zig = buildPackages.zig_0_10;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_10;
+    };
   };
 
   ansible-later = callPackage ../tools/admin/ansible/later.nix { };
@@ -32120,7 +32136,7 @@ with pkgs;
 
   hue-cli = callPackage ../tools/networking/hue-cli { };
 
-  inherit (nodePackages) hueadm;
+  hueadm = callPackage ../tools/misc/hueadm { };
 
   hugin = callPackage ../applications/graphics/hugin {
     wxGTK = wxGTK32;
@@ -32337,7 +32353,9 @@ with pkgs;
   waycorner = callPackage ../applications/misc/waycorner { };
 
   waylock = callPackage ../applications/misc/waylock {
-    zig = buildPackages.zig_0_10;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_10;
+    };
   };
 
   wayshot = callPackage ../tools/misc/wayshot { };
@@ -33311,7 +33329,10 @@ with pkgs;
   merkaartor = libsForQt5.callPackage ../applications/misc/merkaartor { };
 
   mepo = callPackage ../applications/misc/mepo {
-    zig = buildPackages.zig_0_9;
+    inherit (gnome) zenity;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_9;
+    };
   };
 
   meshcentral = callPackage ../tools/admin/meshcentral { };
@@ -33977,7 +33998,9 @@ with pkgs;
   netcoredbg = callPackage ../development/tools/misc/netcoredbg { };
 
   ncdu = callPackage ../tools/misc/ncdu {
-    zig = buildPackages.zig_0_10;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_10;
+    };
   };
 
   ncdu_1 = callPackage ../tools/misc/ncdu/1.nix { };
@@ -36592,7 +36615,7 @@ with pkgs;
 
   aperture = callPackage ../applications/blockchains/aperture { };
 
-  balanceofsatoshis = nodePackages.balanceofsatoshis;
+  balanceofsatoshis = callPackage ../tools/misc/balanceofsatoshis { };
 
   bitcoin  = libsForQt5.callPackage ../applications/blockchains/bitcoin {
     stdenv = if stdenv.isDarwin then darwin.apple_sdk_11_0.stdenv else stdenv;
@@ -37141,7 +37164,9 @@ with pkgs;
   };
 
   blackshades = callPackage ../games/blackshades {
-    zig = buildPackages.zig_0_9;
+    zigHook = zigHook.override {
+      zig = buildPackages.zig_0_9;
+    };
   };
 
   blobby = callPackage ../games/blobby { };

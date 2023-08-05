@@ -30,7 +30,6 @@
   "@webassemblyjs/wasm-text-gen-1.11.1" = "wasmgen";
   "@webassemblyjs/wast-refmt-1.11.1" = "wast-refmt";
   aws-cdk = "cdk";
-  balanceofsatoshis = "bos";
   carbon-now-cli = "carbon-now";
   cdk8s-cli = "cdk8s";
   cdktf-cli = "cdktf";
@@ -46,7 +45,6 @@
   firebase-tools = "firebase";
   fkill-cli = "fkill";
   fleek-cli = "fleek";
-  flood = "flood";
   git-run = "gr";
   gitmoji-cli = "gitmoji";
   graphql-cli = "graphql";
@@ -58,13 +56,13 @@
   less = "lessc";
   localtunnel = "lt";
   lua-fmt = "luafmt";
-  markdownlint-cli = "markdownlint";
   near-cli = "near";
   neovim = "neovim-node-host";
   parcel-bundler = "parcel";
   parsoid = "parse.js";
   poor-mans-t-sql-formatter-cli = "sqlformat";
   postcss-cli = "postcss";
+  prettier = "prettier";
   purescript-psa = "psa";
   react-native-cli = "react-native";
   react-tools = "jsx";
@@ -72,6 +70,7 @@
   s3http = "s3http.js";
   svelte-language-server = "svelteserver";
   teck-programmer = "teck-firmware-upgrade";
+  typescript-language-server = "typescript-language-server";
   uglify-js = "uglifyjs";
   undollar = "$";
   vsc-leetcode-cli = "leetcode";
