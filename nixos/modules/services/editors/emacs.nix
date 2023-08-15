@@ -80,6 +80,15 @@ in
         using the EDITOR environment variable.
       '';
     };
+
+    startupTimeout = mkOption {
+      type = types.str;
+      default = "90s"; # or whatever default you want
+      description = lib.mdDoc ''
+	Timeout for starting the Emacs daemon.
+      '';
+    };
+
   };
 
   config = mkIf (cfg.enable || cfg.install) {
@@ -91,6 +100,7 @@ in
         ExecStart = "${pkgs.bash}/bin/bash -c 'source ${config.system.build.setEnvironment}; exec ${cfg.package}/bin/emacs --daemon'";
         ExecStop = "${cfg.package}/bin/emacsclient --eval (kill-emacs)";
         Restart = "always";
+        TimeoutStartSec = cfg.startupTimeout;
       };
     } // optionalAttrs cfg.enable { wantedBy = [ "default.target" ]; };
 
