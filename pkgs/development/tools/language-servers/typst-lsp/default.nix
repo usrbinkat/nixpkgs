@@ -1,21 +1,19 @@
 { lib
 , rustPlatform
 , fetchFromGitHub
-, pkg-config
-, openssl
 , stdenv
 , darwin
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "typst-lsp";
-  version = "0.9.0";
+  version = "0.9.4";
 
   src = fetchFromGitHub {
     owner = "nvarner";
     repo = "typst-lsp";
     rev = "v${version}";
-    hash = "sha256-XV/LlibO+2ORle0lVcqqHrDdH75kodk9yOU3OsHFA+A=";
+    hash = "sha256-qbmNZFXg+XaDkHdBA3dU0ICKovEQrl7AAcMkElMLbMA=";
   };
 
   cargoLock = {
@@ -25,20 +23,19 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  nativeBuildInputs = [
-    pkg-config
-  ];
-
-  buildInputs = [
-    openssl
-  ] ++ lib.optionals stdenv.isDarwin [
+  buildInputs = lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security
   ];
 
   checkFlags = [
     # requires internet access
-    "--skip=workspace::package::external::repo::test::full_download"
+    "--skip=workspace::package::external::remote_repo::test::full_download"
   ];
+
+  # workspace::package::external::manager::test::local_package tries to access the data directory
+  preCheck = ''
+    export HOME=$(mktemp -d)
+  '';
 
   meta = with lib; {
     description = "A brand-new language server for Typst";
