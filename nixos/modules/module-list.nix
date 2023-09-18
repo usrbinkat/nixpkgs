@@ -55,6 +55,7 @@
   ./hardware/cpu/amd-sev.nix
   ./hardware/cpu/intel-microcode.nix
   ./hardware/cpu/intel-sgx.nix
+  ./hardware/decklink.nix
   ./hardware/device-tree.nix
   ./hardware/digitalbitbox.nix
   ./hardware/flipperzero.nix
@@ -63,6 +64,7 @@
   ./hardware/gpgsmartcards.nix
   ./hardware/hackrf.nix
   ./hardware/i2c.nix
+  ./hardware/infiniband.nix
   ./hardware/keyboard/qmk.nix
   ./hardware/keyboard/teck.nix
   ./hardware/keyboard/uhk.nix
@@ -163,6 +165,7 @@
   ./programs/direnv.nix
   ./programs/dmrconfig.nix
   ./programs/droidcam.nix
+  ./programs/ecryptfs.nix
   ./programs/environment.nix
   ./programs/evince.nix
   ./programs/extra-container.nix
@@ -276,6 +279,8 @@
   ./programs/xss-lock.nix
   ./programs/xwayland.nix
   ./programs/yabar.nix
+  ./programs/yazi.nix
+  ./programs/yubikey-touch-detector.nix
   ./programs/zmap.nix
   ./programs/zsh/oh-my-zsh.nix
   ./programs/zsh/zsh-autoenv.nix
@@ -393,7 +398,6 @@
   ./services/continuous-integration/gitlab-runner.nix
   ./services/continuous-integration/gocd-agent/default.nix
   ./services/continuous-integration/gocd-server/default.nix
-  ./services/continuous-integration/hail.nix
   ./services/continuous-integration/hercules-ci-agent/default.nix
   ./services/continuous-integration/hydra/default.nix
   ./services/continuous-integration/jenkins/default.nix
@@ -644,6 +648,7 @@
   ./services/misc/etesync-dav.nix
   ./services/misc/evdevremapkeys.nix
   ./services/misc/felix.nix
+  ./services/misc/forgejo.nix
   ./services/misc/freeswitch.nix
   ./services/misc/fstrim.nix
   ./services/misc/gammu-smsd.nix
@@ -894,6 +899,7 @@
   ./services/networking/flannel.nix
   ./services/networking/freenet.nix
   ./services/networking/freeradius.nix
+  ./services/networking/frp.nix
   ./services/networking/frr.nix
   ./services/networking/gateone.nix
   ./services/networking/gdomap.nix
@@ -1064,7 +1070,6 @@
   ./services/networking/tayga.nix
   ./services/networking/tcpcrypt.nix
   ./services/networking/teamspeak3.nix
-  ./services/networking/tedicross.nix
   ./services/networking/teleport.nix
   ./services/networking/tetrd.nix
   ./services/networking/tftpd.nix
@@ -1248,6 +1253,7 @@
   ./services/web-apps/matomo.nix
   ./services/web-apps/mattermost.nix
   ./services/web-apps/mediawiki.nix
+  ./services/web-apps/meme-bingo-web.nix
   ./services/web-apps/miniflux.nix
   ./services/web-apps/monica.nix
   ./services/web-apps/moodle.nix
@@ -1259,6 +1265,7 @@
   ./services/web-apps/node-red.nix
   ./services/web-apps/onlyoffice.nix
   ./services/web-apps/openvscode-server.nix
+  ./services/web-apps/mobilizon.nix
   ./services/web-apps/openwebrx.nix
   ./services/web-apps/outline.nix
   ./services/web-apps/peering-manager.nix
