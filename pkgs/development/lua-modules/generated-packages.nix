@@ -5,7 +5,7 @@ nixpkgs$ ./maintainers/scripts/update-luarocks-packages
 You can customize the generated packages in pkgs/development/lua-modules/overrides.nix
 */
 
-{ self, stdenv, lib, fetchurl, fetchgit, callPackage, ... } @ args:
+{ stdenv, lib, fetchurl, fetchgit, callPackage, ... } @ args:
 final: prev:
 {
 alt-getopt = callPackage({ luaAtLeast, lua, luaOlder, fetchgit, buildLuarocksPackage }:
@@ -2498,6 +2498,29 @@ buildLuarocksPackage {
     homepage = "http://olivinelabs.com/mediator_lua/";
     description = "Event handling through channels";
     license.fullName = "MIT <http://opensource.org/licenses/MIT>";
+  };
+}) {};
+
+middleclass = callPackage({ luaOlder, buildLuarocksPackage, fetchurl, lua }:
+buildLuarocksPackage {
+  pname = "middleclass";
+  version = "4.1.1-0";
+  knownRockspec = (fetchurl {
+    url    = "mirror://luarocks/middleclass-4.1.1-0.rockspec";
+    sha256 = "10xzs48lr1dy7cx99581r956gl16px0a9gbdlfar41n19r96mhb1";
+  }).outPath;
+  src = fetchurl {
+    url    = "https://github.com/kikito/middleclass/archive/v4.1.1.tar.gz";
+    sha256 = "11ahv0b9wgqfnabv57rb7ilsvn2vcvxb1czq6faqrsqylvr5l7nh";
+  };
+
+  disabled = (luaOlder "5.1");
+  propagatedBuildInputs = [ lua ];
+
+  meta = {
+    homepage = "https://github.com/kikito/middleclass";
+    description = "A simple OOP library for Lua";
+    license.fullName = "MIT";
   };
 }) {};
 
