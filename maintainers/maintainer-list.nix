@@ -2608,12 +2608,6 @@
     githubId = 200617;
     name = "Ben Sima";
   };
-  bstrik = {
-    email = "dutchman55@gmx.com";
-    github = "bstrik";
-    githubId = 7716744;
-    name = "Berno Strik";
-  };
   btlvr = {
     email = "btlvr@protonmail.com";
     github = "btlvr";
@@ -3885,6 +3879,13 @@
     github = "daniyalsuri6";
     githubId = 107034852;
     name = "Daniyal Suri";
+  };
+  dannixon = {
+    email = "dan@dan-nixon.com";
+    github = "DanNixon";
+    githubId = 4037377;
+    name = "Dan Nixon";
+    matrix = "@dannixon:matrix.org";
   };
   dansbandit = {
     github = "dansbandit";
@@ -14810,6 +14811,12 @@
     githubId = 165283;
     name = "Alexey Kutepov";
   };
+  rexxDigital = {
+    email = "joellarssonpriv@gmail.com";
+    github = "rexxDigital";
+    githubId = 44014925;
+    name = "Rexx Larsson";
+  };
   rgnns = {
     email = "jglievano@gmail.com";
     github = "rgnns";
@@ -15041,6 +15048,12 @@
     github = "roberth";
     githubId = 496447;
     name = "Robert Hensing";
+  };
+  robert-manchester = {
+    email = "robert.manchester@gmail.com";
+    github = "robert-manchester";
+    githubId = 86313040;
+    name = "Robert Manchester";
   };
   robertodr = {
     email = "roberto.diremigio@gmail.com";
