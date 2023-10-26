@@ -5043,8 +5043,6 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) Security;
   };
 
-  diesel-cli-ext = callPackage ../development/tools/diesel-cli-ext { };
-
   refinery-cli = callPackage ../development/tools/refinery-cli { };
 
   digitemp = callPackage ../tools/misc/digitemp { };
@@ -5989,7 +5987,7 @@ with pkgs;
   };
 
   micropad = callPackage ../applications/office/micropad {
-    electron = electron_25;
+    electron = electron_27;
   };
 
   midicsv = callPackage ../tools/audio/midicsv { };
@@ -18117,7 +18115,6 @@ with pkgs;
     inherit (darwin) libobjc;
   };
 
-  ssm-agent = callPackage ../applications/networking/cluster/ssm-agent { };
   ssm-session-manager-plugin = callPackage ../applications/networking/cluster/ssm-session-manager-plugin { };
 
   starlark = callPackage ../development/interpreters/starlark { };
@@ -34883,6 +34880,10 @@ with pkgs;
 
   pyrosimple = callPackage ../applications/networking/p2p/pyrosimple { };
 
+  pzip = callPackage ../by-name/pz/pzip/package.nix {
+    buildGoModule = buildGo121Module;
+  };
+
   qbittorrent = libsForQt5.callPackage ../applications/networking/p2p/qbittorrent { };
   qbittorrent-nox = qbittorrent.override {
     guiSupport = false;
@@ -35687,7 +35688,9 @@ with pkgs;
 
   teams = callPackage ../applications/networking/instant-messengers/teams { };
 
-  teams-for-linux = callPackage ../applications/networking/instant-messengers/teams-for-linux { };
+  teams-for-linux = callPackage ../applications/networking/instant-messengers/teams-for-linux {
+    electron = electron_27;
+  };
 
   teamspeak_client = libsForQt5.callPackage ../applications/networking/instant-messengers/teamspeak/client.nix { };
   teamspeak5_client = callPackage ../applications/networking/instant-messengers/teamspeak/client5.nix { };
@@ -38385,8 +38388,6 @@ with pkgs;
   steam-acf = callPackage ../tools/games/steam-acf { };
 
   steamback = python311.pkgs.callPackage ../tools/games/steamback { };
-
-  steamguard-cli = callPackage ../tools/security/steamguard-cli { };
 
   protontricks = python3Packages.callPackage ../tools/package-management/protontricks {
     inherit winetricks steam-run yad;

@@ -30,6 +30,7 @@
 , Foundation
 , testers
 , imagemagick
+, nixos-icons
 , perlPackages
 , python3
 }:
@@ -48,13 +49,13 @@ in
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "imagemagick";
-  version = "7.1.1-20";
+  version = "7.1.1-21";
 
   src = fetchFromGitHub {
     owner = "ImageMagick";
     repo = "ImageMagick";
     rev = finalAttrs.version;
-    hash = "sha256-ZVyHvx1UvKjTaErxenuNb8FKwkD4Q3chGtwVmfGoMeM=";
+    hash = "sha256-DqVonNh6bFNK91Pd6MwIO1yMrshfGAWNWPpHHQUA2sQ=";
   };
 
   outputs = [ "out" "dev" "doc" ]; # bin/ isn't really big
@@ -126,6 +127,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   passthru.tests = {
     version = testers.testVersion { package = finalAttrs.finalPackage; };
+    inherit nixos-icons;
     inherit (perlPackages) ImageMagick;
     inherit (python3.pkgs) img2pdf;
     pkg-config = testers.testMetaPkgConfig finalAttrs.finalPackage;
