@@ -1964,7 +1964,9 @@ with pkgs;
 
   node-glob = callPackage ../tools/misc/node-glob { };
 
-  nominatim = callPackage ../servers/nominatim { };
+  nominatim = callPackage ../servers/nominatim {
+    postgresql = postgresql_12;
+  };
 
   npm-check-updates = callPackage ../tools/package-management/npm-check-updates { };
 
@@ -3319,9 +3321,7 @@ with pkgs;
 
   astc-encoder = callPackage ../tools/graphics/astc-encoder { };
 
-  asymptote = libsForQt5.callPackage ../tools/graphics/asymptote {
-    texLive = texlive.combine { inherit (texlive) scheme-small epsf cm-super texinfo media9 ocgx2 collection-latexextra; };
-  };
+  asymptote = libsForQt5.callPackage ../tools/graphics/asymptote { };
 
   async = callPackage ../development/tools/async { };
 
@@ -5443,7 +5443,8 @@ with pkgs;
   texFunctions = callPackage ../tools/typesetting/tex/nix pkgs;
 
   # TeX Live; see https://nixos.org/nixpkgs/manual/#sec-language-texlive
-  texlive = recurseIntoAttrs (callPackage ../tools/typesetting/tex/texlive { });
+  texlive = callPackage ../tools/typesetting/tex/texlive { };
+  inherit (texlive.schemes) texliveBasic texliveBookPub texliveConTeXt texliveFull texliveGUST texliveInfraOnly texliveMedium texliveMinimal texliveSmall texliveTeTeX;
 
   fop = callPackage ../tools/typesetting/fop {
     jdk = openjdk8;
@@ -6580,7 +6581,6 @@ with pkgs;
 
   asciidoc = callPackage ../tools/typesetting/asciidoc {
     inherit (python3.pkgs) pygments matplotlib numpy aafigure recursivePthLoader;
-    texlive = texlive.combine { inherit (texlive) scheme-minimal dvipng; };
     w3m = w3m-batch;
     enableStandardFeatures = false;
   };
@@ -13274,9 +13274,7 @@ with pkgs;
 
   sipcalc = callPackage ../tools/networking/sipcalc { };
 
-  skribilo = callPackage ../tools/typesetting/skribilo {
-    tex = texlive.combined.scheme-small;
-  };
+  skribilo = callPackage ../tools/typesetting/skribilo { };
 
   skytemple = callPackage ../applications/misc/skytemple { };
 
@@ -13827,7 +13825,6 @@ with pkgs;
 
   texmacs = libsForQt5.callPackage ../applications/editors/texmacs {
     stdenv = if stdenv.isDarwin then darwin.apple_sdk_11_0.stdenv else stdenv;
-    tex = texlive.combined.scheme-small;
     extraFonts = true;
   };
 
@@ -15553,9 +15550,7 @@ with pkgs;
 
   as31 = callPackage ../development/compilers/as31 { };
 
-  asl = callPackage ../development/compilers/asl {
-    tex = texlive.combined.scheme-medium;
-  };
+  asl = callPackage ../development/compilers/asl { };
 
   aspectj = callPackage ../development/compilers/aspectj { };
 
@@ -15589,7 +15584,6 @@ with pkgs;
 
   bluespec = callPackage ../development/compilers/bluespec {
     gmp-static = gmp.override { withStatic = true; };
-    tex = texlive.combined.scheme-full;
   };
 
   bun = callPackage ../development/web/bun { };
@@ -15857,10 +15851,8 @@ with pkgs;
   default-gcc-version =
     if (with stdenv.targetPlatform; isVc4 || libc == "relibc") then 6
     else 12;
-  inherit ({
-      gcc = pkgs.${"gcc${toString default-gcc-version}"};
-      gccFun = callPackage ../development/compilers/gcc;
-    }) gcc gccFun;
+  gcc = pkgs.${"gcc${toString default-gcc-version}"};
+  gccFun = callPackage ../development/compilers/gcc;
   gcc-unwrapped = gcc.cc;
 
   wrapNonDeterministicGcc = stdenv: ccWrapper:
@@ -15985,41 +15977,7 @@ with pkgs;
       extraPackages = [];
   };
 
-  # This expression will be pushed into pkgs/development/compilers/gcc/common
-  # once the top-level gcc/${version}/default.nix files are deduplicated.
-  inherit
-    (lib.listToAttrs (map (majorMinorVersion:
-      let atLeast = lib.versionAtLeast majorMinorVersion;
-          attrName = "gcc${lib.replaceStrings ["."] [""] majorMinorVersion}";
-          pkg = lowPrio (wrapCC (callPackage ../development/compilers/gcc/default.nix ({
-            inherit noSysDirs;
-            inherit majorMinorVersion;
-            reproducibleBuild = true;
-            profiledCompiler = false;
-            libcCross = if stdenv.targetPlatform != stdenv.buildPlatform then libcCross else null;
-            threadsCross = if stdenv.targetPlatform != stdenv.buildPlatform then threadsCrossFor majorMinorVersion else { };
-            isl = if       stdenv.isDarwin then null
-                  else if    atLeast "9"   then isl_0_20
-                  else if    atLeast "7"   then isl_0_17
-                  else if    atLeast "6"   then (if stdenv.targetPlatform.isRedox then isl_0_17 else isl_0_14)
-                  else if    atLeast "4.9" then isl_0_11
-                  else            /* "4.8" */   isl_0_14;
-          } // lib.optionalAttrs (majorMinorVersion == "4.8") {
-            texinfo = texinfo5; # doesn't validate since 6.1 -> 6.3 bump
-          } // lib.optionalAttrs (majorMinorVersion == "4.9") {
-            # Build fails on Darwin with clang
-            stdenv = if stdenv.isDarwin then gccStdenv else stdenv;
-          } // lib.optionalAttrs (!(atLeast "6")) {
-            cloog = if stdenv.isDarwin
-                    then null
-                    else if atLeast "4.9" then cloog_0_18_0
-                    else          /* 4.8 */    cloog;
-          } // lib.optionalAttrs (atLeast "6" && !(atLeast "9")) {
-            # gcc 10 is too strict to cross compile gcc <= 8
-            stdenv = if (stdenv.targetPlatform != stdenv.buildPlatform) && stdenv.cc.isGNU then gcc7Stdenv else stdenv;
-          })));
-      in lib.nameValuePair attrName pkg
-    ) [ "4.8" "4.9" "6" "7" "8" "9" "10" "11" "12" "13" ]))
+  inherit (callPackage ../development/compilers/gcc/all.nix { inherit noSysDirs; })
     gcc48 gcc49 gcc6 gcc7 gcc8 gcc9 gcc10 gcc11 gcc12 gcc13;
 
   gcc_latest = gcc13;
@@ -16804,7 +16762,6 @@ with pkgs;
   mitama-cpp-result = callPackage ../development/libraries/mitama-cpp-result { };
 
   mitscheme = callPackage ../development/compilers/mit-scheme {
-    texLive = texlive.combine { inherit (texlive) scheme-small epsf texinfo; };
     texinfo = texinfo6;
   };
 
@@ -19203,9 +19160,7 @@ with pkgs;
   # NOTE: Override and set useIcon = false to use Awk instead of Icon.
   noweb = callPackage ../development/tools/literate-programming/noweb { };
 
-  nuweb = callPackage ../development/tools/literate-programming/nuweb {
-    tex = texlive.combined.scheme-medium;
-  };
+  nuweb = callPackage ../development/tools/literate-programming/nuweb { };
 
   eztrace = callPackage ../development/tools/profiling/EZTrace { };
 
@@ -19941,9 +19896,7 @@ with pkgs;
 
   randoop = callPackage ../development/tools/analysis/randoop { };
 
-  inherit (callPackages ../development/tools/parsing/ragel {
-      tex = texlive.combined.scheme-small;
-    }) ragelStable ragelDev;
+  inherit (callPackages ../development/tools/parsing/ragel { }) ragelStable ragelDev;
 
   hammer = callPackage ../development/tools/parsing/hammer { };
 
@@ -20095,6 +20048,12 @@ with pkgs;
   shellcheck = callPackage ../development/tools/shellcheck {
     inherit (__splicedPackages.haskellPackages) ShellCheck;
   };
+
+
+  # Minimal shellcheck executable for package checks.
+  # Use shellcheck which does not include docs, as
+  # pandoc takes long to build and documentation isn't needed for just running the cli
+  shellcheck-minimal = haskell.lib.compose.justStaticExecutables shellcheck.unwrapped;
 
   shellharden = callPackage ../development/tools/shellharden { };
 
@@ -26095,9 +26054,6 @@ with pkgs;
 
   R = darwin.apple_sdk_11_0.callPackage ../applications/science/math/R {
     # TODO: split docs into a separate output
-    texLive = texlive.combine {
-      inherit (texlive) scheme-small inconsolata helvetic texinfo fancyvrb cm-super rsfs;
-    };
     withRecommendedPackages = false;
     inherit (darwin.apple_sdk_11_0.frameworks) Cocoa Foundation;
     inherit (darwin) libobjc;
@@ -30440,7 +30396,6 @@ with pkgs;
 
   apostrophe = callPackage ../applications/editors/apostrophe {
     pythonPackages = python3Packages;
-    texlive = texlive.combined.scheme-medium;
   };
 
   ardour = callPackage ../applications/audio/ardour { };
@@ -31102,6 +31057,8 @@ with pkgs;
   };
 
   denaro = callPackage ../applications/finance/denaro { };
+
+  inherit (callPackage ../development/tools/devpod { }) devpod devpod-desktop;
 
   dfasma = libsForQt5.callPackage ../applications/audio/dfasma { };
 
@@ -32919,7 +32876,6 @@ with pkgs;
 
   ipe = qt6Packages.callPackage ../applications/graphics/ipe {
     ghostscript = ghostscriptX;
-    texlive = texlive.combine { inherit (texlive) scheme-small; };
     lua5 = lua5_3;
   };
 
@@ -34890,9 +34846,12 @@ with pkgs;
 
   pyrosimple = callPackage ../applications/networking/p2p/pyrosimple { };
 
-  qbittorrent = libsForQt5.callPackage ../applications/networking/p2p/qbittorrent { };
-  qbittorrent-nox = qbittorrent.override {
-    guiSupport = false;
+  qbittorrent = qt6Packages.callPackage ../applications/networking/p2p/qbittorrent {
+    inherit (darwin.apple_sdk.frameworks) Cocoa;
+  };
+  qbittorrent-nox = qbittorrent.override { guiSupport = false; };
+  qbittorrent-qt5 = libsForQt5.callPackage ../applications/networking/p2p/qbittorrent {
+    inherit (darwin.apple_sdk.frameworks) Cocoa;
   };
 
   qcad = libsForQt5.callPackage ../applications/misc/qcad { };
@@ -35477,9 +35436,7 @@ with pkgs;
 
   robustirc-bridge = callPackage ../servers/irc/robustirc-bridge { };
 
-  routedns = callPackage ../tools/networking/routedns {
-    buildGoModule = buildGo119Module; # build fails with 1.20
-  };
+  routedns = callPackage ../tools/networking/routedns { };
 
   skrooge = libsForQt5.callPackage ../applications/office/skrooge { };
 
@@ -35941,9 +35898,7 @@ with pkgs;
 
   toxiproxy = callPackage ../development/tools/toxiproxy { };
 
-  tqsl = callPackage ../applications/radio/tqsl {
-    openssl = openssl_1_1;
-  };
+  tqsl = callPackage ../applications/radio/tqsl { };
   trustedqsl = tqsl; # Alias added 2019-02-10
 
   transcode = callPackage ../applications/audio/transcode { };
@@ -39870,7 +39825,7 @@ with pkgs;
     };
   };
 
-  pari = callPackage ../applications/science/math/pari { tex = texlive.combined.scheme-basic; };
+  pari = callPackage ../applications/science/math/pari { };
   gp2c = callPackage ../applications/science/math/pari/gp2c.nix { };
 
   palp = callPackage ../applications/science/math/palp { };
@@ -41777,8 +41732,6 @@ with pkgs;
 
   wire-desktop = callPackage ../applications/networking/instant-messengers/wire-desktop { };
 
-  wiremock = callPackage ../tools/networking/wiremock { };
-
   wireworld = callPackage ../games/wireworld { };
 
 
@@ -41958,9 +41911,7 @@ with pkgs;
 
   zalgo = callPackage ../tools/misc/zalgo { };
 
-  inherit (callPackage ../applications/misc/zettlr {
-    texlive = texlive.combined.scheme-medium;
-  }) zettlr;
+  inherit (callPackage ../applications/misc/zettlr { }) zettlr;
 
   unpoller = callPackage ../servers/monitoring/unpoller { };
 
