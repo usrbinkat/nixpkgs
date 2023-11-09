@@ -2506,6 +2506,8 @@ with pkgs;
 
   gst = callPackage ../applications/version-management/gst { };
 
+  guilt = callPackage ../applications/version-management/guilt { };
+
   gut = callPackage ../applications/version-management/gut { };
 
   hred = callPackage ../development/tools/hred { };
@@ -6027,8 +6029,8 @@ with pkgs;
   moar = callPackage ../tools/misc/moar { };
 
   mobilizon = callPackage ../servers/mobilizon {
-    elixir = elixir_1_14;
-    beamPackages = beamPackages.extend (self: super: { elixir = elixir_1_14; });
+    elixir = elixir_1_15;
+    beamPackages = beamPackages.extend (self: super: { elixir = elixir_1_15; });
     mobilizon-frontend = callPackage ../servers/mobilizon/frontend.nix { };
   };
 
@@ -19655,8 +19657,6 @@ with pkgs;
     '';
   };
 
-  mommy = callPackage ../tools/misc/mommy { };
-
   moon = callPackage ../development/tools/build-managers/moon/default.nix { };
 
   msgpack-tools = callPackage ../development/tools/msgpack-tools { };
@@ -24991,6 +24991,7 @@ with pkgs;
     sdnotify-wrapper
     skalibs
     skalibs_2_10
+    tipidee
     utmps;
 
   kgt = callPackage ../development/tools/kgt {
@@ -26568,9 +26569,7 @@ with pkgs;
 
   mackerel-agent = callPackage ../servers/monitoring/mackerel-agent { };
 
-  mailmanPackages = callPackage ../servers/mail/mailman {
-    python3 = python310;
-  };
+  mailmanPackages = callPackage ../servers/mail/mailman { };
   inherit (mailmanPackages) mailman mailman-hyperkitty;
   mailman-web = mailmanPackages.web;
 
@@ -30959,6 +30958,8 @@ with pkgs;
 
   cosmic-settings = callPackage ../applications/window-managers/cosmic/settings { };
 
+  cosmic-edit = callPackage ../applications/editors/cosmic-edit { };
+
   coursera-dl = callPackage ../applications/misc/coursera-dl { };
 
   coyim = callPackage ../applications/networking/instant-messengers/coyim { };
@@ -33935,7 +33936,7 @@ with pkgs;
     wlroots = wlroots_0_15;
   };
 
-  mpvScripts = import ../applications/video/mpv/scripts { inherit lib callPackage config; };
+  mpvScripts = callPackage ../applications/video/mpv/scripts { };
 
   open-in-mpv = callPackage ../applications/video/open-in-mpv { };
 
@@ -34142,9 +34143,7 @@ with pkgs;
 
   pnglatex = with python3Packages; toPythonApplication pnglatex;
 
-  polybar = callPackage ../applications/misc/polybar { };
-
-  polybarFull = callPackage ../applications/misc/polybar {
+  polybarFull = polybar.override {
     alsaSupport = true;
     githubSupport = true;
     mpdSupport = true;
@@ -34870,7 +34869,9 @@ with pkgs;
     inherit (darwin) sigtool;
   };
 
-  qemu-utils = callPackage ../applications/virtualization/qemu/utils.nix { };
+  qemu-utils = qemu.override {
+    toolsOnly = true;
+  };
 
   canokey-qemu = callPackage ../applications/virtualization/qemu/canokey-qemu.nix { };
 
@@ -35862,7 +35863,9 @@ with pkgs;
 
   tofi = callPackage ../applications/misc/tofi { };
 
-  tokyo-night-gtk = callPackage ../data/themes/tokyo-night-gtk { };
+  tokyo-night-gtk = tokyo-night-gtk-variants.full;
+
+  tokyo-night-gtk-variants = recurseIntoAttrs (callPackage ../data/themes/tokyo-night-gtk { });
 
   topydo = callPackage ../applications/misc/topydo { };
 
@@ -37318,7 +37321,7 @@ with pkgs;
 
   heroic-unwrapped = callPackage ../games/heroic {
     # Match the version used by the upstream package.
-    electron = electron_24;
+    electron = electron_27;
   };
 
   heroic = callPackage ../games/heroic/fhsenv.nix { };
@@ -41251,7 +41254,7 @@ with pkgs;
   vazir-code-font = callPackage ../data/fonts/vazir-code-font { };
 
   vaultwarden = callPackage ../tools/security/vaultwarden {
-    inherit (darwin.apple_sdk.frameworks) Security CoreServices;
+    inherit (darwin.apple_sdk.frameworks) Security CoreServices SystemConfiguration;
   };
   vaultwarden-sqlite = vaultwarden;
   vaultwarden-mysql = vaultwarden.override { dbBackend = "mysql"; };
