@@ -1321,7 +1321,7 @@ self: super: with self; {
 
   basemap-data = callPackage ../development/python-modules/basemap-data { };
 
-  bash_kernel = callPackage ../development/python-modules/bash_kernel { };
+  bash-kernel = callPackage ../development/python-modules/bash-kernel { };
 
   bashlex = callPackage ../development/python-modules/bashlex { };
 
@@ -2958,7 +2958,11 @@ self: super: with self; {
 
   django-countries = callPackage ../development/python-modules/django-countries { };
 
+  django-crispy-bootstrap4 = callPackage ../development/python-modules/django-crispy-bootstrap4 { };
+
   django-crispy-forms = callPackage ../development/python-modules/django-crispy-forms { };
+
+  django-crontab = callPackage ../development/python-modules/django-crontab { };
 
   django-cryptography = callPackage ../development/python-modules/django-cryptography { };
 
@@ -5172,6 +5176,8 @@ self: super: with self; {
 
   hvplot = callPackage ../development/python-modules/hvplot { };
 
+  hwdata = callPackage ../development/python-modules/hwdata { };
+
   hwi = callPackage ../development/python-modules/hwi { };
 
   hy = callPackage ../development/python-modules/hy { };
@@ -5825,7 +5831,7 @@ self: super: with self; {
 
   jupyterlab-pygments = callPackage ../development/python-modules/jupyterlab-pygments { };
 
-  jupyterlab_server = callPackage ../development/python-modules/jupyterlab_server { };
+  jupyterlab-server = callPackage ../development/python-modules/jupyterlab-server { };
 
   jupyterlab-widgets = callPackage ../development/python-modules/jupyterlab-widgets { };
 
@@ -6462,8 +6468,6 @@ self: super: with self; {
   ltpycld2 = callPackage ../development/python-modules/ltpycld2 { };
 
   luddite = callPackage ../development/python-modules/luddite { };
-
-  ludios_wpull = callPackage ../development/python-modules/ludios_wpull { };
 
   luftdaten = callPackage ../development/python-modules/luftdaten { };
 
@@ -9260,6 +9264,8 @@ self: super: with self; {
 
   pysubs2 = callPackage ../development/python-modules/pysubs2 { };
 
+  pysuez = callPackage ../development/python-modules/pysuez { };
+
   pysqlitecipher = callPackage ../development/python-modules/pysqlitecipher { };
 
   pysyncthru = callPackage ../development/python-modules/pysyncthru { };
@@ -9937,6 +9943,18 @@ self: super: with self; {
   pycurl = callPackage ../development/python-modules/pycurl { };
 
   pycxx = callPackage ../development/python-modules/pycxx { };
+
+  pycyphal = callPackage ../development/python-modules/pycyphal {
+    # Does not yet support nunavut 2+, use latest 1.X version instead
+    # https://github.com/OpenCyphal/pycyphal/issues/277
+    nunavut = self.nunavut.overridePythonAttrs (prev: rec {
+      version = "1.9.0";
+      src = prev.src.override {
+        inherit version;
+        hash = "sha256-KhgijXJ908uxM7VZdXo1WU/RGU0cfqctBCbpF2wOcy8=";
+      };
+    });
+  };
 
   pydaikin = callPackage ../development/python-modules/pydaikin { };
 
@@ -11043,7 +11061,7 @@ self: super: with self; {
 
   pystray = callPackage ../development/python-modules/pystray { };
 
-  py_stringmatching = callPackage ../development/python-modules/py_stringmatching { };
+  py-stringmatching = callPackage ../development/python-modules/py-stringmatching { };
 
   pysvg-py3 = callPackage ../development/python-modules/pysvg-py3 { };
 
@@ -13094,7 +13112,7 @@ self: super: with self; {
 
   sopel = callPackage ../development/python-modules/sopel { };
 
-  sorl_thumbnail = callPackage ../development/python-modules/sorl_thumbnail { };
+  sorl-thumbnail = callPackage ../development/python-modules/sorl-thumbnail { };
 
   sortedcollections = callPackage ../development/python-modules/sortedcollections { };
 
@@ -14068,7 +14086,6 @@ self: super: with self; {
   toposort = callPackage ../development/python-modules/toposort { };
 
   torch = callPackage ../development/python-modules/torch {
-    inherit (pkgs.config) cudaSupport;
     magma =
       if pkgs.config.cudaSupport
       then pkgs.magma-cuda-static
@@ -16091,7 +16108,7 @@ self: super: with self; {
 
   zope-deprecation = callPackage ../development/python-modules/zope-deprecation { };
 
-  zope_dottedname = callPackage ../development/python-modules/zope_dottedname { };
+  zope-dottedname = callPackage ../development/python-modules/zope-dottedname { };
 
   zope_event = callPackage ../development/python-modules/zope_event { };
 
