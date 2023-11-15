@@ -2527,7 +2527,9 @@ with pkgs;
 
   lab = callPackage ../applications/version-management/lab { };
 
-  labctl = callPackage ../tools/networking/labctl { };
+  labctl = callPackage ../tools/networking/labctl {
+    buildGoModule = buildGo120Module;
+  };
 
   lefthook = callPackage ../applications/version-management/lefthook { };
 
@@ -9882,7 +9884,9 @@ with pkgs;
 
   kdiff3 = libsForQt5.callPackage ../tools/text/kdiff3 { };
 
-  kube-router = callPackage ../applications/networking/cluster/kube-router { };
+  kube-router = callPackage ../applications/networking/cluster/kube-router {
+    buildGoModule = buildGo120Module;
+  };
 
   kubepug = callPackage ../development/tools/kubepug { };
 
@@ -11570,7 +11574,9 @@ with pkgs;
 
   onlykey = callPackage ../tools/security/onlykey { node_webkit = nwjs; };
 
-  ooniprobe-cli = callPackage ../tools/networking/ooniprobe-cli { };
+  ooniprobe-cli = callPackage ../tools/networking/ooniprobe-cli {
+    buildGoModule = buildGo120Module;
+  };
 
   openapi-generator-cli = callPackage ../tools/networking/openapi-generator-cli { jre = pkgs.jre_headless; };
   openapi-generator-cli-unstable = callPackage ../tools/networking/openapi-generator-cli/unstable.nix { jre = pkgs.jre_headless; };
@@ -13921,8 +13927,6 @@ with pkgs;
 
   tinycbor = callPackage ../development/libraries/tinycbor { };
 
-  tinycompress = callPackage ../development/libraries/tinycompress { };
-
   tinyfecvpn = callPackage ../tools/networking/tinyfecvpn { };
 
   tinyobjloader = callPackage ../development/libraries/tinyobjloader { };
@@ -14247,6 +14251,8 @@ with pkgs;
   typstfmt = callPackage ../tools/typesetting/typstfmt { };
 
   typst-live = callPackage ../tools/typesetting/typst-live { };
+
+  typst-preview = callPackage ../tools/typesetting/typst-preview { };
 
   tz = callPackage ../tools/misc/tz { };
 
@@ -15263,7 +15269,9 @@ with pkgs;
 
   zip = callPackage ../tools/archivers/zip { };
 
-  zincsearch = callPackage ../servers/search/zincsearch { };
+  zincsearch = callPackage ../servers/search/zincsearch {
+    buildGoModule = buildGo120Module;
+  };
 
   zkfuse = callPackage ../tools/filesystems/zkfuse { };
 
@@ -24388,9 +24396,10 @@ with pkgs;
 
   inherit (callPackages ../development/libraries/libressl { })
     libressl_3_6
-    libressl_3_7;
+    libressl_3_7
+    libressl_3_8;
 
-  libressl = libressl_3_7;
+  libressl = libressl_3_8;
 
   boringssl = callPackage ../development/libraries/boringssl { };
 
@@ -26589,7 +26598,10 @@ with pkgs;
 
   maker-panel = callPackage ../tools/misc/maker-panel { };
 
-  mastodon = callPackage ../servers/mastodon { };
+  mastodon = callPackage ../servers/mastodon {
+    nodejs-slim = nodejs-slim_20;
+    ruby = ruby_3_2;
+  };
 
   gotosocial = callPackage ../servers/gotosocial { };
 
@@ -27576,19 +27588,9 @@ with pkgs;
 
   alertmanager-irc-relay = callPackage ../servers/monitoring/alertmanager-irc-relay { };
 
-  tinyalsa = callPackage ../os-specific/linux/tinyalsa { };
-
-  alsa-project = callPackage ../os-specific/linux/alsa-project { };
-  inherit (alsa-project)
-    alsa-firmware
-    alsa-lib
-    alsa-oss
-    alsa-plugins
-    alsa-plugins-wrapper
-    alsa-tools
-    alsa-topology-conf
-    alsa-ucm-conf
-    alsa-utils;
+  alsa-utils = callPackage ../by-name/al/alsa-utils/package.nix {
+    fftw = fftwFloat;
+  };
 
   apparency = callPackage ../os-specific/darwin/apparency { };
 
@@ -28384,7 +28386,9 @@ with pkgs;
 
   goconst = callPackage ../development/tools/goconst { };
 
-  goconvey = callPackage ../development/tools/goconvey { };
+  goconvey = callPackage ../development/tools/goconvey {
+    buildGoModule = buildGo120Module;
+  };
 
   go-callvis = callPackage ../development/tools/go-callvis { };
 
@@ -28442,7 +28446,9 @@ with pkgs;
 
   go-mod-graph-chart = callPackage ../development/tools/go-mod-graph-chart { };
 
-  gomacro = callPackage ../development/tools/gomacro { };
+  gomacro = callPackage ../development/tools/gomacro {
+    buildGoModule = buildGo120Module;
+  };
 
   gomodifytags = callPackage ../development/tools/gomodifytags { };
 
@@ -30968,8 +30974,6 @@ with pkgs;
 
   cordless = callPackage ../applications/networking/instant-messengers/cordless { };
 
-  cosmic-applets = callPackage ../applications/window-managers/cosmic/applets { };
-
   cosmic-settings = callPackage ../applications/window-managers/cosmic/settings { };
 
   cosmic-edit = callPackage ../applications/editors/cosmic-edit { };
@@ -31408,7 +31412,9 @@ with pkgs;
 
   gigalixir = callPackage ../tools/misc/gigalixir { };
 
-  go-libp2p-daemon = callPackage ../servers/go-libp2p-daemon { };
+  go-libp2p-daemon = callPackage ../servers/go-libp2p-daemon {
+    buildGoModule = buildGo120Module;
+  };
 
   go-motion = callPackage ../development/tools/go-motion { };
 
@@ -33558,7 +33564,9 @@ with pkgs;
 
   markscribe = callPackage ../tools/text/markscribe { };
 
-  magnetico = callPackage ../applications/networking/p2p/magnetico { };
+  magnetico = callPackage ../applications/networking/p2p/magnetico {
+    buildGoModule = buildGo120Module;
+  };
 
   mastodon-bot = nodePackages.mastodon-bot;
 
@@ -35751,6 +35759,8 @@ with pkgs;
   textplots = callPackage ../tools/graphics/textplots { };
 
   texture-synthesis = callPackage ../tools/graphics/texture-synthesis { };
+
+  texturepacker = qt6.callPackage ../applications/graphics/texturepacker { };
 
   tty-solitaire = callPackage ../applications/misc/tty-solitaire { };
 
