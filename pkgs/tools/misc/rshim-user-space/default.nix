@@ -3,28 +3,32 @@
 , fetchFromGitHub
 , autoconf
 , automake
+, makeBinaryWrapper
 , pkg-config
 , pciutils
 , libusb1
 , fuse
+, busybox
+, pv
+, withBfbInstall ? true
 }:
 
 stdenv.mkDerivation rec {
   pname = "rshim-user-space";
-  version = "2.0.9";
+  version = "2.0.11";
 
   src = fetchFromGitHub {
     owner = "Mellanox";
     repo = pname;
     rev = "rshim-${version}";
-    hash = "sha256-B85nhZRzcvTqwjfnVAeLNYti4Y/mprJsxBAMd+MwH84=";
+    hash = "sha256-LbAs4IFfYT6OhrtwRXmuQR9rD7ulmmUB20Au5fO8j9w=";
   };
 
   nativeBuildInputs = [
     autoconf
     automake
     pkg-config
-  ];
+  ] ++ lib.optionals withBfbInstall [ makeBinaryWrapper ];
 
   buildInputs = [
     pciutils
@@ -39,6 +43,13 @@ stdenv.mkDerivation rec {
   installPhase = ''
     mkdir -p "$out"/bin
     cp -a src/rshim "$out"/bin/
+  '' + lib.optionalString withBfbInstall ''
+    cp -a scripts/bfb-install "$out"/bin/
+  '';
+
+  postFixup = lib.optionalString withBfbInstall ''
+    wrapProgram $out/bin/bfb-install \
+      --set PATH ${lib.makeBinPath [ busybox pv ]}
   '';
 
   meta = with lib; {

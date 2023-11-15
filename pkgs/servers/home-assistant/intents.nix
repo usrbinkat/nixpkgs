@@ -20,7 +20,7 @@
 
 buildPythonPackage rec {
   pname = "home-assistant-intents";
-  version = "2023.9.22";
+  version = "2023.10.16";
   format = "pyproject";
 
   disabled = pythonOlder "3.9";
@@ -29,7 +29,7 @@ buildPythonPackage rec {
     owner = "home-assistant";
     repo = "intents-package";
     rev = "refs/tags/${version}";
-    hash = "sha256-n0IIWS5edh4XD/W9Eo88pal2+zJQtrHg74FSGvPIlPg=";
+    hash = "sha256-qW5KzABEEBw2tu5+fAoWd8nCxuvTzEU14M8iaSo2WzE=";
     fetchSubmodules = true;
   };
 
@@ -50,7 +50,7 @@ buildPythonPackage rec {
   postInstall = ''
     pushd intents
     # https://github.com/home-assistant/intents/blob/main/script/package#L18
-    ${python.pythonForBuild.interpreter} -m script.intentfest merged_output $out/${python.sitePackages}/home_assistant_intents/data
+    ${python.pythonOnBuildForHost.interpreter} -m script.intentfest merged_output $out/${python.sitePackages}/home_assistant_intents/data
     popd
   '';
 

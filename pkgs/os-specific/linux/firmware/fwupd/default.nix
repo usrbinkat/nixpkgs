@@ -8,6 +8,7 @@
 , gobject-introspection
 , gettext
 , libgudev
+, libdrm
 , polkit
 , libxmlb
 , glib
@@ -18,14 +19,12 @@
 , curl
 , libjcat
 , elfutils
-, libsmbios
 , efivar
 , valgrind
 , meson
 , libuuid
 , colord
 , ninja
-, gcab
 , gnutls
 , protobufc
 , python3
@@ -124,7 +123,7 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "fwupd";
-  version = "1.9.5";
+  version = "1.9.7";
 
   # libfwupd goes to lib
   # daemon, plug-ins and libfwupdplugin go to out
@@ -135,7 +134,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "fwupd";
     repo = "fwupd";
     rev = finalAttrs.version;
-    hash = "sha256-dqbFgVgG2RQM5ZHIEIIJOmrjtwlaRXEyY+2OdDs4PGo=";
+    hash = "sha256-NhVCIjkwoTZptctIrkU9HgXzjr+KCUZfEKcjoYgAEdM=";
   };
 
   patches = [
@@ -169,7 +168,6 @@ stdenv.mkDerivation (finalAttrs: {
     gettext
     shared-mime-info
     valgrind
-    gcab
     gnutls
     protobufc # for protoc
     python
@@ -183,6 +181,7 @@ stdenv.mkDerivation (finalAttrs: {
     gusb
     sqlite
     libarchive
+    libdrm
     curl
     elfutils
     libgudev
@@ -202,8 +201,6 @@ stdenv.mkDerivation (finalAttrs: {
     libcbor
     libqmi
     xz # for liblzma
-  ] ++ lib.optionals haveDell [
-    libsmbios
   ] ++ lib.optionals haveFlashrom [
     flashrom
   ];
@@ -213,6 +210,7 @@ stdenv.mkDerivation (finalAttrs: {
     "-Dplugin_dummy=true"
     # We are building the official releases.
     "-Dsupported_build=enabled"
+    "-Dlaunchd=disabled"
     "-Dudevdir=lib/udev"
     "-Dsystemd_root_prefix=${placeholder "out"}"
     "-Dinstalled_test_prefix=${placeholder "installedTests"}"
@@ -226,7 +224,6 @@ stdenv.mkDerivation (finalAttrs: {
   ] ++ lib.optionals (!enablePassim) [
     "-Dpassim=disabled"
   ] ++ lib.optionals (!haveDell) [
-    "-Dplugin_dell=disabled"
     "-Dplugin_synaptics_mst=disabled"
   ] ++ lib.optionals (!haveRedfish) [
     "-Dplugin_redfish=disabled"
@@ -350,8 +347,6 @@ stdenv.mkDerivation (finalAttrs: {
       "pki/fwupd-metadata/GPG-KEY-Linux-Vendor-Firmware-Service"
       "pki/fwupd-metadata/LVFS-CA.pem"
       "grub.d/35_fwupd"
-    ] ++ lib.optionals haveDell [
-      "fwupd/remotes.d/dell-esrt.conf"
     ];
 
     # DisabledPlugins key in fwupd/daemon.conf

@@ -20,6 +20,10 @@ let
     expr = (builtins.tryEval (builtins.seq expr "didn't throw"));
     expected = { success = false; value = false; };
   };
+  testingEval = expr: {
+    expr = (builtins.tryEval expr).success;
+    expected = true;
+  };
   testingDeepThrow = expr: testingThrow (builtins.deepSeq expr expr);
 
   testSanitizeDerivationName = { name, expected }:
@@ -38,6 +42,18 @@ let
 in
 
 runTests {
+
+# CUSTOMIZATION
+
+  testFunctionArgsMakeOverridable = {
+    expr = functionArgs (makeOverridable ({ a, b, c ? null}: {}));
+    expected = { a = false; b = false; c = true; };
+  };
+
+  testFunctionArgsMakeOverridableOverride = {
+    expr = functionArgs (makeOverridable ({ a, b, c ? null }: {}) { a = 1; b = 2; }).override;
+    expected = { a = false; b = false; c = true; };
+  };
 
 # TRIVIAL
 
@@ -173,6 +189,11 @@ runTests {
   testConcatLines = {
     expr = concatLines ["a" "b" "c"];
     expected = "a\nb\nc\n";
+  };
+
+  testReplicateString = {
+    expr = strings.replicate 5 "hello";
+    expected = "hellohellohellohellohello";
   };
 
   testSplitStringsSimple = {
@@ -505,6 +526,38 @@ runTests {
       };
     };
 
+  testFoldl'Empty = {
+    expr = foldl' (acc: el: abort "operation not called") 0 [ ];
+    expected = 0;
+  };
+
+  testFoldl'IntegerAdding = {
+    expr = foldl' (acc: el: acc + el) 0 [ 1 2 3 ];
+    expected = 6;
+  };
+
+  # The accumulator isn't forced deeply
+  testFoldl'NonDeep = {
+    expr = take 3 (foldl'
+      (acc: el: [ el ] ++ acc)
+      [ (abort "unevaluated list entry") ]
+      [ 1 2 3 ]);
+    expected = [ 3 2 1 ];
+  };
+
+  # Compared to builtins.foldl', lib.foldl' evaluates the first accumulator strictly too
+  testFoldl'StrictInitial = {
+    expr = (builtins.tryEval (foldl' (acc: el: el) (throw "hello") [])).success;
+    expected = false;
+  };
+
+  # Make sure we don't get a stack overflow for large lists
+  # This number of elements would notably cause a stack overflow if it was implemented without the `foldl'` builtin
+  testFoldl'Large = {
+    expr = foldl' (acc: el: acc + el) 0 (range 0 100000);
+    expected = 5000050000;
+  };
+
   testTake = testAllTrue [
     ([] == (take 0 [  1 2 3 ]))
     ([1] == (take 1 [  1 2 3 ]))
@@ -673,6 +726,15 @@ runTests {
     expected = 7;
   };
 
+  testAllUnique_true = {
+    expr = allUnique [ 3 2 4 1 ];
+    expected = true;
+  };
+  testAllUnique_false = {
+    expr = allUnique [ 3 2 3 4 ];
+    expected = false;
+  };
+
 # ATTRSETS
 
   testConcatMapAttrs = {
@@ -708,7 +770,7 @@ runTests {
       # should just return the initial value
       emptySet = foldlAttrs (throw "function not needed") 123 { };
       # should just evaluate to the last value
-      accNotNeeded = foldlAttrs (_acc: _name: v: v) (throw "accumulator not needed") { z = 3; a = 2; };
+      valuesNotNeeded = foldlAttrs (acc: _name: _v: acc) 3 { z = throw "value z not needed"; a = throw "value a not needed"; };
       # the accumulator doesnt have to be an attrset it can be as trivial as being just a number or string
       trivialAcc = foldlAttrs (acc: _name: v: acc * 10 + v) 1 { z = 1; a = 2; };
     };
@@ -718,7 +780,7 @@ runTests {
         names = [ "bar" "foo" ];
       };
       emptySet = 123;
-      accNotNeeded = 3;
+      valuesNotNeeded = 3;
       trivialAcc = 121;
     };
   };
@@ -783,6 +845,26 @@ runTests {
     expr = overrideExisting { a = 3; b = 2; } { a = 1; };
     expected = { a = 1; b = 2; };
   };
+
+  testListAttrsReverse = let
+    exampleAttrs = {foo=1; bar="asdf"; baz = [1 3 3 7]; fnord=null;};
+    exampleSingletonList = [{name="foo"; value=1;}];
+  in {
+    expr = {
+      isReverseToListToAttrs = builtins.listToAttrs (attrsToList exampleAttrs) == exampleAttrs;
+      isReverseToAttrsToList = attrsToList (builtins.listToAttrs exampleSingletonList) == exampleSingletonList;
+      testDuplicatePruningBehaviour = attrsToList (builtins.listToAttrs [{name="a"; value=2;} {name="a"; value=1;}]);
+    };
+    expected = {
+      isReverseToAttrsToList = true;
+      isReverseToListToAttrs = true;
+      testDuplicatePruningBehaviour = [{name="a"; value=2;}];
+    };
+  };
+
+  testAttrsToListsCanDealWithFunctions = testingEval (
+    attrsToList { someFunc= a: a + 1;}
+  );
 
 # GENERATORS
 # these tests assume attributes are converted to lists
@@ -1838,4 +1920,32 @@ runTests {
     expr = (with types; either int (listOf (either bool str))).description;
     expected = "signed integer or list of (boolean or string)";
   };
+
+# Meta
+  testGetExe'Output = {
+    expr = getExe' {
+      type = "derivation";
+      out = "somelonghash";
+      bin = "somelonghash";
+    } "executable";
+    expected = "somelonghash/bin/executable";
+  };
+
+  testGetExeOutput = {
+    expr = getExe {
+      type = "derivation";
+      out = "somelonghash";
+      bin = "somelonghash";
+      meta.mainProgram = "mainProgram";
+    };
+    expected = "somelonghash/bin/mainProgram";
+  };
+
+  testGetExe'FailureFirstArg = testingThrow (
+    getExe' "not a derivation" "executable"
+  );
+
+  testGetExe'FailureSecondArg = testingThrow (
+    getExe' { type = "derivation"; } "dir/executable"
+  );
 }

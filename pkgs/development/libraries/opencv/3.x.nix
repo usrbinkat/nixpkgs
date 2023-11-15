@@ -1,6 +1,7 @@
 { lib, stdenv
 , fetchFromGitHub
 , fetchpatch
+, callPackage
 , cmake, pkg-config, unzip, zlib, pcre, hdf5
 , glog, boost, gflags, protobuf3_21
 , config
@@ -14,8 +15,7 @@
 , enableOpenblas  ? true, openblas, blas, lapack
 , enableContrib   ? true
 
-, enableCuda      ? config.cudaSupport &&
-                    stdenv.hostPlatform.isx86_64
+, enableCuda      ? config.cudaSupport
 , cudaPackages ? { }
 , enableUnfree    ? false
 , enableIpp       ? false
@@ -250,6 +250,16 @@ stdenv.mkDerivation {
   ] ++ lib.optionals stdenv.isDarwin [
     "-DWITH_OPENCL=OFF"
     "-DWITH_LAPACK=OFF"
+
+    # Disable unnecessary vendoring that's enabled by default only for Darwin.
+    # Note that the opencvFlag feature flags listed above still take
+    # precedence, so we can safely list everything here.
+    "-DBUILD_ZLIB=OFF"
+    "-DBUILD_TIFF=OFF"
+    "-DBUILD_JASPER=OFF"
+    "-DBUILD_JPEG=OFF"
+    "-DBUILD_PNG=OFF"
+    "-DBUILD_WEBP=OFF"
   ] ++ lib.optionals enablePython [
     "-DOPENCV_SKIP_PYTHON_LOADER=ON"
   ] ++ lib.optionals enableEigen [
@@ -279,7 +289,11 @@ stdenv.mkDerivation {
 
   hardeningDisable = [ "bindnow" "relro" ];
 
-  passthru = lib.optionalAttrs enablePython { pythonPath = []; };
+  passthru = lib.optionalAttrs enablePython { pythonPath = []; } // {
+    tests = lib.optionalAttrs enableCuda {
+      no-libstdcxx-errors = callPackage ./libstdcxx-test.nix { attrName = "opencv3"; };
+    };
+  };
 
   meta = with lib; {
     description = "Open Computer Vision Library with more than 500 algorithms";

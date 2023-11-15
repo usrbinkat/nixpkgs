@@ -255,12 +255,12 @@ rec {
   cdt = buildEclipseUpdateSite rec {
     name = "cdt-${version}";
     # find current version at https://github.com/eclipse-cdt/cdt/releases
-    version = "11.1.1";
+    version = "11.3.0";
 
     src = fetchzip {
       stripRoot = false;
       url = "https://www.eclipse.org/downloads/download.php?r=1&nf=1&file=/tools/cdt/releases/${lib.versions.majorMinor version}/${name}/${name}.zip";
-      hash = "sha256-k78QKPIb3Lr0Wcg2tTlX1abdpcvxspjaxJiP2Hrgb4A=";
+      hash = "sha256-jmHiIohn8Ol0QhTCOVRStIAKmMzOPcQ5i5QNz6hKQ4M=";
     };
 
     meta = with lib; {

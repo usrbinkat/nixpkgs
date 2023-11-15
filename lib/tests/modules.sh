@@ -91,6 +91,9 @@ checkConfigOutput '^true$' config.result ./test-mergeAttrDefinitionsWithPrio.nix
 # is the option.
 checkConfigOutput '^true$' config.result ./module-argument-default.nix
 
+# gvariant
+checkConfigOutput '^true$' config.assertion ./gvariant.nix
+
 # types.pathInStore
 checkConfigOutput '".*/store/0lz9p8xhf89kb1c1kk6jxrzskaiygnlh-bash-5.2-p15.drv"' config.pathInStore.ok1 ./types.nix
 checkConfigOutput '".*/store/0fb3ykw9r5hpayd05sr0cizwadzq1d8q-bash-5.2-p15"' config.pathInStore.ok2 ./types.nix
@@ -224,8 +227,16 @@ checkConfigOutput '^false$' config.enableAlias ./alias-with-priority-can-overrid
 
 # Check mkPackageOption
 checkConfigOutput '^"hello"$' config.package.pname ./declare-mkPackageOption.nix
+checkConfigOutput '^"hello"$' config.namedPackage.pname ./declare-mkPackageOption.nix
+checkConfigOutput '^".*Hello.*"$' options.namedPackage.description ./declare-mkPackageOption.nix
+checkConfigOutput '^"hello"$' config.pathPackage.pname ./declare-mkPackageOption.nix
+checkConfigOutput '^"pkgs\.hello\.override \{ stdenv = pkgs\.clangStdenv; \}"$' options.packageWithExample.example.text ./declare-mkPackageOption.nix
+checkConfigOutput '^".*Example extra description\..*"$' options.packageWithExtraDescription.description ./declare-mkPackageOption.nix
 checkConfigError 'The option .undefinedPackage. is used but not defined' config.undefinedPackage ./declare-mkPackageOption.nix
 checkConfigOutput '^null$' config.nullablePackage ./declare-mkPackageOption.nix
+checkConfigOutput '^"null or package"$' options.nullablePackageWithDefault.type.description ./declare-mkPackageOption.nix
+checkConfigOutput '^"myPkgs\.hello"$' options.packageWithPkgsText.defaultText.text ./declare-mkPackageOption.nix
+checkConfigOutput '^"hello-other"$' options.packageFromOtherSet.default.pname ./declare-mkPackageOption.nix
 
 # submoduleWith
 

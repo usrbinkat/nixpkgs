@@ -3,16 +3,16 @@
 
 buildGoModule rec {
   pname = "discordo";
-  version = "unstable-2023-04-07";
+  version = "unstable-2023-10-22";
 
   src = fetchFromGitHub {
     owner = "ayn2op";
     repo = pname;
-    rev = "f8c58057945b1ded2f78dc0956ea25aa281a0b31";
-    hash = "sha256-FUSPQK4rB0J89s+I7yhF8SQ/Q9uygQSCF9o6ltYxOk4=";
+    rev = "afaa155b510881efae8a9c27d3453cedc3fbb3b5";
+    hash = "sha256-9Ls8IF6DoLUbUqdwqD5ncp9p/HUnAl8eaYYjnIAJcw0=";
   };
 
-  vendorHash = "sha256-fLhyyIChqh+eEzht3CSLPfx6glw0YhiTb9PsbWJafWQ=";
+  vendorHash = "sha256-11dbOoajCXMonNy9bXy4RiT9FLH/Sga4+eH5mUFDlNA=";
 
   CGO_ENABLED = 0;
 

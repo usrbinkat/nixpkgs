@@ -93,7 +93,9 @@ stdenv.mkDerivation (finalAttrs: {
   # https://github.com/NixOS/nixpkgs/issues/219466
   separateDebugInfo = !stdenv.hostPlatform.isStatic;
 
-  doCheck = true;
+  doCheck =
+    # routinely hangs on powerpc64le
+    !stdenv.hostPlatform.isPower64;
 
   # Some of the tests use localhost networking.
   __darwinAllowLocalNetworking = true;
@@ -113,7 +115,7 @@ stdenv.mkDerivation (finalAttrs: {
     description = "A multi-platform support library with a focus on asynchronous I/O";
     homepage    = "https://libuv.org/";
     changelog   = "https://github.com/libuv/libuv/blob/v${finalAttrs.version}/ChangeLog";
-    maintainers = with maintainers; [ cstrahan ];
+    maintainers = with maintainers; [ ];
     platforms   = platforms.all;
     license     = with licenses; [ mit isc bsd2 bsd3 cc-by-40 ];
   };

@@ -7,21 +7,21 @@
 
 let
   pname = "osu-lazer-bin";
-  version = "2023.914.0";
+  version = "2023.1026.0";
   name = "${pname}-${version}";
 
   osu-lazer-bin-src = {
     aarch64-darwin = {
       url = "https://github.com/ppy/osu/releases/download/${version}/osu.app.Apple.Silicon.zip";
-      sha256 = "sha256-F+KQmr6XQAwo/QXhRog5bH2pYmP47jBZ5+x/ehD0E3Y=";
+      sha256 = "sha256-6IaN189cV/ORP77zrjdcCPwPzNR/W6JmrZXVasCx8MQ=";
     };
     x86_64-darwin = {
       url = "https://github.com/ppy/osu/releases/download/${version}/osu.app.Intel.zip";
-      sha256 = "sha256-gdLL8awOJ29kyabKQ1qRuhIbtUFpVxo3Posg8WjTPJA=";
+      sha256 = "sha256-XrlajKT3GLjfj800mULj9iwkF9Bvx9Rlz56K6welq2U=";
     };
     x86_64-linux = {
       url = "https://github.com/ppy/osu/releases/download/${version}/osu.AppImage";
-      sha256 = "sha256-5hrzR1HkWjKpB8JmaOpc+hFg9o4bE+WXMKPBGdMWIFw=";
+      sha256 = "sha256-yr7PtBUBE0tB0giAE8aQCNJvxS/tMzlLWpJ3NyosQZk=";
     };
   }.${stdenv.system} or (throw "${pname}-${version}: ${stdenv.system} is unsupported.");
 
@@ -70,7 +70,7 @@ let
       unfreeRedistributable # osu-framework contains libbass.so in repository
     ];
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
-    maintainers = with maintainers; [ delan stepbrobd ];
+    maintainers = with maintainers; [ delan stepbrobd spacefault ];
     mainProgram = "osu!";
     platforms = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" ];
   };

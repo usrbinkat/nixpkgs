@@ -423,7 +423,7 @@ let
     seqinr = [ pkgs.zlib.dev ];
     webp = [ pkgs.pkg-config ];
     seqminer = with pkgs; [ zlib.dev bzip2 ];
-    sf = with pkgs; [ gdal proj geos ];
+    sf = with pkgs; [ gdal proj geos libtiff curl ];
     terra = with pkgs; [ gdal proj geos ];
     showtext = with pkgs; [ zlib libpng icu freetype.dev ];
     simplexreg = [ pkgs.gsl ];
@@ -546,7 +546,7 @@ let
     AMOUNTAIN = [ pkgs.gsl ];
     Rsymphony = with pkgs; [ pkg-config doxygen graphviz subversion ];
     tcltk2 = with pkgs; [ tcl tk ];
-    tikzDevice = with pkgs; [ which texlive.combined.scheme-medium ];
+    tikzDevice = with pkgs; [ which texliveMedium ];
     gridGraphics = [ pkgs.which ];
     adimpro = with pkgs; [ which xorg.xdpyinfo ];
     rsvg = [ pkgs.librsvg.dev ];
@@ -1032,6 +1032,7 @@ let
     });
 
     quarto = old.quarto.overrideAttrs (attrs: {
+      propagatedBuildInputs = attrs.propagatedBuildInputs ++ [ pkgs.quarto ];
       postPatch = ''
         substituteInPlace "R/quarto.R" \
           --replace "path_env <- Sys.getenv(\"QUARTO_PATH\", unset = NA)" "path_env <- Sys.getenv(\"QUARTO_PATH\", unset = '${lib.getBin pkgs.quarto}/bin/quarto')"
@@ -1375,6 +1376,12 @@ let
 
     textshaping = old.textshaping.overrideAttrs (attrs: {
       env.NIX_LDFLAGS = "-lfribidi -lharfbuzz";
+    });
+
+    httpuv = old.httpuv.overrideAttrs (_: {
+      preConfigure = ''
+        patchShebangs configure
+      '';
     });
 
     ijtiff = old.ijtiff.overrideAttrs (_: {

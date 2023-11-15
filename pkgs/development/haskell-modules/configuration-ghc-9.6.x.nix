@@ -65,19 +65,24 @@ self: super: {
   # Version deviations from Stackage LTS
   #
 
-  doctest = doDistribute super.doctest_0_22_0;
+  doctest = doDistribute super.doctest_0_22_2;
   http-api-data = doDistribute self.http-api-data_0_6; # allows base >= 4.18
   some = doDistribute self.some_1_0_5;
   th-abstraction = doDistribute self.th-abstraction_0_6_0_0;
   th-desugar = doDistribute self.th-desugar_1_15;
   semigroupoids = doDistribute self.semigroupoids_6_0_0_1;
   bifunctors = doDistribute self.bifunctors_5_6_1;
-  base-compat = doDistribute self.base-compat_0_13_0;
-  base-compat-batteries = doDistribute self.base-compat-batteries_0_13_0;
+  base-compat = doDistribute self.base-compat_0_13_1;
+  base-compat-batteries = doDistribute self.base-compat-batteries_0_13_1;
+  fgl = doDistribute self.fgl_5_8_1_1;
 
   # Because we bumped the version of th-abstraction above.^
   aeson = doJailbreak super.aeson;
   free = doJailbreak super.free;
+
+  # Because we bumped the version of base-compat above.^
+  cabal-plan = unmarkBroken super.cabal-plan;
+  cabal-plan-bounds = unmarkBroken super.cabal-plan-bounds;
 
   # Requires filepath >= 1.4.100.0 <=> GHC >= 9.6
   file-io = unmarkBroken super.file-io;
@@ -86,9 +91,15 @@ self: super: {
   # https://github.com/mokus0/th-extras/pull/21
   th-extras = doJailbreak super.th-extras;
 
-  ghc-lib = doDistribute self.ghc-lib_9_6_2_20230523;
-  ghc-lib-parser = doDistribute self.ghc-lib-parser_9_6_2_20230523;
-  ghc-lib-parser-ex = doDistribute self.ghc-lib-parser-ex_9_6_0_1;
+  ghc-lib = doDistribute self.ghc-lib_9_6_3_20231014;
+  ghc-lib-parser = doDistribute self.ghc-lib-parser_9_6_3_20231014;
+  ghc-lib-parser-ex = doDistribute self.ghc-lib-parser-ex_9_6_0_2;
+
+  # Tests fail due to the newly-build fourmolu not being in PATH
+  # https://github.com/fourmolu/fourmolu/issues/231
+  fourmolu = dontCheck super.fourmolu_0_14_0_0;
+  ormolu = self.generateOptparseApplicativeCompletions [ "ormolu" ] (enableSeparateBinOutput super.ormolu_0_7_2_0);
+  hlint = super.hlint_3_6_1;
 
   # v0.1.6 forbids base >= 4.18
   singleton-bool = doDistribute super.singleton-bool_0_1_7;
@@ -141,16 +152,6 @@ self: super: {
     sha256 = "0w4y3v69nd3yafpml4gr23l94bdhbmx8xky48a59lckmz5x9fgxv";
   }) (doJailbreak super.language-haskell-extract);
 
-  # Patch for support of mtl-2.3
-  monad-par = appendPatch
-    (pkgs.fetchpatch {
-      name = "monad-par-mtl-2.3.patch";
-      url = "https://github.com/simonmar/monad-par/pull/75/commits/ce53f6c1f8246224bfe0223f4aa3d077b7b6cc6c.patch";
-      sha256 = "1jxkl3b3lkjhk83f5q220nmjxbkmni0jswivdw4wfbzp571djrlx";
-      stripLen = 1;
-    })
-    (doJailbreak super.monad-par);
-
   # Patch 0.17.1 for support of mtl-2.3
   xmonad-contrib = appendPatch
     (pkgs.fetchpatch {
@@ -175,23 +176,19 @@ self: super: {
       hls-floskell-plugin = null;
     };
 
-  fourmolu = super.fourmolu_0_13_1_0;
-  ormolu = super.ormolu_0_7_1_0;
-  stylish-haskell = super.stylish-haskell_0_14_5_0;
-
   # Newer version of servant required for GHC 9.6
-  servant = self.servant_0_20;
+  servant = self.servant_0_20_1;
   servant-server = self.servant-server_0_20;
   servant-client = self.servant-client_0_20;
   servant-client-core = self.servant-client-core_0_20;
-  # Select versions compatible with servant_0_20
+  # Select versions compatible with servant_0_20_1
   servant-docs = self.servant-docs_0_13;
   servant-swagger = self.servant-swagger_1_2;
   # Jailbreaks for servant <0.20
   servant-lucid = doJailbreak super.servant-lucid;
 
   # Jailbreak strict upper bounds: http-api-data <0.6
-  servant_0_20 = doJailbreak super.servant_0_20;
+  servant_0_20_1 = doJailbreak super.servant_0_20_1;
   servant-server_0_20 = doJailbreak super.servant-server_0_20;
   servant-client_0_20 = doJailbreak super.servant-client_0_20;
   servant-client-core_0_20 = doJailbreak super.servant-client-core_0_20;
@@ -203,8 +200,8 @@ self: super: {
   hw-prim = dontCheck (doJailbreak super.hw-prim);
   stm-containers = dontCheck super.stm-containers;
   regex-tdfa = dontCheck super.regex-tdfa;
-  rebase = doJailbreak super.rebase_1_20;
-  rerebase = doJailbreak super.rerebase_1_20;
+  rebase = doJailbreak super.rebase_1_20_1_1;
+  rerebase = doJailbreak super.rerebase_1_20_1_1;
   hiedb = dontCheck super.hiedb;
   retrie = dontCheck super.retrie;
   # https://github.com/kowainik/relude/issues/436
@@ -213,8 +210,6 @@ self: super: {
   ghc-exactprint = unmarkBroken (addBuildDepends (with self.ghc-exactprint.scope; [
    HUnit Diff data-default extra fail free ghc-paths ordered-containers silently syb
   ]) super.ghc-exactprint_1_7_0_1);
-
-  hlint = super.hlint_3_6_1;
 
   inherit (pkgs.lib.mapAttrs (_: doJailbreak ) super)
     hls-cabal-plugin
@@ -271,5 +266,11 @@ self: super: {
   }) super.ConfigFile;
 
   # The curl executable is required for withApplication tests.
-  warp_3_3_28 = addTestToolDepend pkgs.curl super.warp_3_3_28;
+  warp_3_3_29 = addTestToolDepend pkgs.curl super.warp_3_3_29;
+
+  # The NCG backend for aarch64 generates invalid jumps in some situations,
+  # the workaround on 9.6 is to revert to the LLVM backend (which is used
+  # for these sorts of situations even on 9.2 and 9.4).
+  # https://gitlab.haskell.org/ghc/ghc/-/issues/23746#note_525318
+  tls = if pkgs.stdenv.hostPlatform.isAarch64 then self.forceLlvmCodegenBackend super.tls else super.tls;
 }

@@ -1,22 +1,18 @@
 { lib
 , callPackage
 , writeShellScriptBin
-, writeText
 , beamPackages
-, yarn2nix
 , mix2nix
-, fetchFromGitLab
 , fetchFromGitHub
-, fetchgit
-, fetchurl
 , git
 , cmake
 , nixosTests
 , mobilizon-frontend
+, ...
 }:
 
 let
-  inherit (beamPackages) mixRelease buildMix buildRebar3 fetchHex;
+  inherit (beamPackages) mixRelease buildMix;
   common = callPackage ./common.nix { };
 in
 mixRelease rec {
@@ -59,7 +55,7 @@ mixRelease rec {
         });
 
         # The remainder are Git dependencies (and their deps) that are not supported by mix2nix currently.
-        web_push_encryption = buildMix rec {
+        web_push_encryption = buildMix {
           name = "web_push_encryption";
           version = "0.3.1";
           src = fetchFromGitHub {
@@ -131,6 +127,7 @@ mixRelease rec {
       ${mix2nix}/bin/mix2nix $SRC/mix.lock > pkgs/servers/mobilizon/mix.nix
       cat $SRC/js/package.json > pkgs/servers/mobilizon/package.json
     '';
+    elixirPackage = beamPackages.elixir;
   };
 
   meta = with lib; {

@@ -6,7 +6,7 @@
 , zlib, zstd, fftw, opensubdiv, freetype, jemalloc, ocl-icd, addOpenGLRunpath
 , jackaudioSupport ? false, libjack2
 , cudaSupport ? config.cudaSupport, cudaPackages ? { }
-, hipSupport ? false, hip # comes with a significantly larger closure size
+, hipSupport ? false, rocmPackages # comes with a significantly larger closure size
 , colladaSupport ? true, opencollada
 , spaceNavSupport ? stdenv.isLinux, libspnav
 , makeWrapper
@@ -15,10 +15,16 @@
 , potrace
 , openxr-loader
 , embree, gmp, libharu
+, openpgl
+, mesa
+, runCommand
+, callPackage
 }:
 
 let
-  python = python310Packages.python;
+  pythonPackages = python310Packages;
+  inherit (pythonPackages) python;
+  buildEnv = callPackage ./wrapper.nix {};
   optix = fetchzip {
     # url taken from the archlinux blender PKGBUILD
     url = "https://developer.download.nvidia.com/redist/optix/v7.3/OptiX-7.3.0-Include.zip";
@@ -26,13 +32,13 @@ let
   };
 
 in
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: rec {
   pname = "blender";
-  version = "3.6.2";
+  version = "3.6.5";
 
   src = fetchurl {
     url = "https://download.blender.org/source/${pname}-${version}.tar.xz";
-    hash = "sha256-olEmcOM3VKo/IWOhQp/qOkdJvwzM7bCkf8i8Bzh07Eg=";
+    hash = "sha256-QAHA/pn22HLsfH6VX4Sp7r25raFxAPS1Gergjez38kM=";
   };
 
   patches = [
@@ -56,6 +62,7 @@ stdenv.mkDerivation rec {
       potrace
       libharu
       libepoxy
+      openpgl
     ]
     ++ lib.optionals waylandSupport [
       wayland wayland-protocols libffi libdecor libxkbcommon dbus
@@ -99,8 +106,8 @@ stdenv.mkDerivation rec {
       substituteInPlace extern/clew/src/clew.c --replace '"libOpenCL.so"' '"${ocl-icd}/lib/libOpenCL.so"'
     '') +
     (lib.optionalString hipSupport ''
-      substituteInPlace extern/hipew/src/hipew.c --replace '"/opt/rocm/hip/lib/libamdhip64.so"' '"${hip}/lib/libamdhip64.so"'
-      substituteInPlace extern/hipew/src/hipew.c --replace '"opt/rocm/hip/bin"' '"${hip}/bin"'
+      substituteInPlace extern/hipew/src/hipew.c --replace '"/opt/rocm/hip/lib/libamdhip64.so"' '"${rocmPackages.clr}/lib/libamdhip64.so"'
+      substituteInPlace extern/hipew/src/hipew.c --replace '"opt/rocm/hip/bin"' '"${rocmPackages.clr}/bin"'
     '');
 
   cmakeFlags =
@@ -184,7 +191,47 @@ stdenv.mkDerivation rec {
     done
   '';
 
-  passthru = { inherit python; };
+  passthru = {
+    inherit python pythonPackages;
+
+    withPackages = f: let packages = f pythonPackages; in buildEnv.override { blender = finalAttrs.finalPackage; extraModules = packages; };
+
+    tests = {
+      render = runCommand "${pname}-test" { } ''
+        set -euo pipefail
+
+        export LIBGL_DRIVERS_PATH=${mesa.drivers}/lib/dri
+        export __EGL_VENDOR_LIBRARY_FILENAMES=${mesa.drivers}/share/glvnd/egl_vendor.d/50_mesa.json
+
+        cat <<'PYTHON' > scene-config.py
+        import bpy
+        bpy.context.scene.eevee.taa_render_samples = 32
+        bpy.context.scene.cycles.samples = 32
+        if ${if stdenv.isAarch64 then "True" else "False"}:
+            bpy.context.scene.cycles.use_denoising = False
+        bpy.context.scene.render.resolution_x = 100
+        bpy.context.scene.render.resolution_y = 100
+        bpy.context.scene.render.threads_mode = 'FIXED'
+        bpy.context.scene.render.threads = 1
+        PYTHON
+
+        mkdir $out
+        for engine in BLENDER_EEVEE CYCLES; do
+          echo "Rendering with $engine..."
+          # Beware that argument order matters
+          ${finalAttrs.finalPackage}/bin/blender \
+            --background \
+            -noaudio \
+            --factory-startup \
+            --python-exit-code 1 \
+            --python scene-config.py \
+            --engine "$engine" \
+            --render-output "$out/$engine" \
+            --render-frame 1
+        done
+      '';
+    };
+  };
 
   meta = with lib; {
     description = "3D Creation/Animation/Publishing System";
@@ -198,4 +245,4 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ goibhniu veprbl ];
     mainProgram = "blender";
   };
-}
+})

@@ -18,7 +18,7 @@
 
 buildPythonPackage rec {
   pname = "censys";
-  version = "2.2.6";
+  version = "2.2.9";
   format = "pyproject";
 
   disabled = pythonOlder "3.7";
@@ -27,7 +27,7 @@ buildPythonPackage rec {
     owner = "censys";
     repo = "censys-python";
     rev = "refs/tags/v${version}";
-    hash = "sha256-awe/6d6AryihS8vYCRtU8APbLUsqv9aKULBmjjaz3gM=";
+    hash = "sha256-Q6Ii2fsJYNABhuaRK4nZ6bjjvNsoIcgNVFBXdBgTXIo=";
   };
 
   nativeBuildInputs = [

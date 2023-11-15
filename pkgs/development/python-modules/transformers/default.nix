@@ -51,16 +51,16 @@
 
 buildPythonPackage rec {
   pname = "transformers";
-  version = "4.33.2";
+  version = "4.35.1";
   format = "setuptools";
 
   disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "huggingface";
-    repo = pname;
+    repo = "transformers";
     rev = "refs/tags/v${version}";
-    hash = "sha256-i2ruOOkuEHHwzGT2Iqy+Pt1sBBUx43eiNkwf2Iqdcfc=";
+    hash = "sha256-ayHx3U/Jpo8K189M6qjRvRbFa9QEpx2uqG85hB8zC/Y=";
   };
 
   propagatedBuildInputs = [

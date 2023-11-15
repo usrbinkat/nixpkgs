@@ -2,14 +2,12 @@
 
 let
   base = (callPackage ./generic.nix (_args // {
-    version = "8.3.0RC2";
-    hash = null;
-  })).overrideAttrs (oldAttrs: {
-    src = fetchurl {
-      url = "https://downloads.php.net/~eric/php-8.3.0RC2.tar.xz";
-      hash = "sha256-0Lo9msTyjfU9kuq0QkvUv4yeshM2tUizMJb9oCggMtw=";
+    version = "8.3.0RC6";
+    phpSrc = fetchurl {
+      url = "https://downloads.php.net/~eric/php-8.3.0RC6.tar.xz";
+      hash = "sha256-Hntdz+vEkh7EQgnB4IrnG2sQ5bG2uJW7T3a0RIbHBe0=";
     };
-  });
+  }));
 in
 base.withExtensions ({ all, ... }: with all; ([
   bcmath

@@ -1,8 +1,7 @@
 { lib
 , rustPlatform
 , fetchFromGitHub
-, pkg-config
-, libgit2_1_6
+, cmake
 , zlib
 , stdenv
 , darwin
@@ -11,24 +10,25 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "cargo-semver-checks";
-  version = "0.23.0";
+  version = "0.24.2";
 
   src = fetchFromGitHub {
     owner = "obi1kenobi";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-/yMZ7ZmvCPFkrnuobbNGmgGNw16J8yT0DEUza7PD/Ow=";
+    hash = "sha256-bfkRuFVlKfzyTomFhgnxbDj76Mfq/Q/Y3ZQUuMpkYQ0=";
   };
 
-  cargoHash = "sha256-u8hja6+T3NwcNub181TfuhI9+QFuIrgqIBlb1lm8+yk=";
+  cargoHash = "sha256-poPTFF+XCAHhHftxOOPaN+dixX2uqtZVfn20DB+cZ5o=";
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [
+    cmake
+  ];
 
   buildInputs = [
-    libgit2_1_6
     zlib
   ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
   nativeCheckInputs = [

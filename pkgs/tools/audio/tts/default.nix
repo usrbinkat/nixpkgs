@@ -10,19 +10,20 @@ let
     packageOverrides = self: super: {
       torch = super.torch-bin;
       torchvision = super.torchvision-bin;
+      tensorflow = super.tensorflow-bin;
     };
   };
 in
 python.pkgs.buildPythonApplication rec {
   pname = "tts";
-  version = "0.16.0";
+  version = "0.19.1";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "coqui-ai";
     repo = "TTS";
     rev = "refs/tags/v${version}";
-    hash = "sha256-2JZyINyzy4X1DTp4ZsMLY/rCsH4JdQ8bF/3hoqtvNTU=";
+    hash = "sha256-GYVr/Wam1IGCSR2vHMAu5Fg/jRB333L6iNjltnRKh4E=";
   };
 
   postPatch = let
@@ -102,7 +103,7 @@ python.pkgs.buildPythonApplication rec {
     # cython modules are not installed for some reasons
     (
       cd TTS/tts/utils/monotonic_align
-      ${python.pythonForBuild.interpreter} setup.py install --prefix=$out
+      ${python.pythonOnBuildForHost.interpreter} setup.py install --prefix=$out
     )
   '';
 

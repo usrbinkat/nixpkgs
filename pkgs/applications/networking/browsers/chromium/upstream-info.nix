@@ -1,65 +1,39 @@
 {
-  beta = {
-    deps = {
-      gn = {
-        rev = "811d332bd90551342c5cbd39e133aa276022d7f8";
-        sha256 = "0jlg3d31p346na6a3yk0x29pm6b7q03ck423n5n6mi8nv4ybwajq";
-        url = "https://gn.googlesource.com/gn";
-        version = "2023-08-01";
-      };
-    };
-    sha256 = "1wf0j189cxpayy6ffmj5j6h5yg3amivryilimjc2ap0jkyj4xrbi";
-    sha256bin64 = "11w1di146mjb9ql30df9yk9x4b9amc6514jzyfbf09mqsrw88dvr";
-    version = "117.0.5938.22";
-  };
-  dev = {
-    deps = {
-      gn = {
-        rev = "cc56a0f98bb34accd5323316e0292575ff17a5d4";
-        sha256 = "1ly7z48v147bfdb1kqkbc98myxpgqq3g6vgr8bjx1ikrk17l82ab";
-        url = "https://gn.googlesource.com/gn";
-        version = "2023-08-10";
-      };
-    };
-    sha256 = "1z01b6w4sgndrlcd26jgimk3rhv3wzpn67nv1fd5ln7dwfwkyq20";
-    sha256bin64 = "11y09hsy7y1vg65xfilq44ffsmn15dqy80fa57psj1kin4a52v2x";
-    version = "118.0.5966.0";
-  };
   stable = {
     chromedriver = {
-      sha256_darwin = "138mw5p6r0n0531fs6322yxsjgj9hia5plw4mj0b3mclykzy5l37";
-      sha256_darwin_aarch64 =
-        "1cym94av2gw2zwj3rdqbjcqkigpzf0zk2bam2hw9n2hiabb4rm0p";
-      sha256_linux = "1q1vyhmcx6b5criz5bn1c3x3z2dzqdgsmwcvlb0rzqlzpla9q26m";
-      version = "117.0.5938.92";
+      hash_darwin = "sha256-sRAU9RJANz+Sov6oaoZasMoaqM+mIZSDbag92wXsVCI=";
+      hash_darwin_aarch64 =
+        "sha256-U+PBsfpc7PNZYedHIdPnWXA9xKpRnon5vxgKKJr69ow=";
+      hash_linux = "sha256-2o6LAo2pEsCi1exPv1nEMk2Tklhh49UyWaYoyQ7Df/Y=";
+      version = "119.0.6045.105";
     };
     deps = {
       gn = {
-        rev = "811d332bd90551342c5cbd39e133aa276022d7f8";
-        sha256 = "0jlg3d31p346na6a3yk0x29pm6b7q03ck423n5n6mi8nv4ybwajq";
+        hash = "sha256-4jWqtsOBh96xbYk1m06G9hj2eQwW6buUXsxWsa5W6/4=";
+        rev = "991530ce394efb58fcd848195469022fa17ae126";
         url = "https://gn.googlesource.com/gn";
-        version = "2023-08-01";
+        version = "2023-09-12";
       };
     };
-    sha256 = "0b1l8gjhqbsyqi30rsn8dyq2hdvwasdqfk1qzk55f9ch4wclkjk5";
-    sha256bin64 = "047w7y4c8k076yzrjc50lvwncbk8b3lyqnd1si9nrsl7c66j2h0q";
-    version = "117.0.5938.92";
+    hash = "sha256-UR8EowMYZ668qQ/6C9C/M+0HSguyUGKVhY46FTG+ShA=";
+    hash_deb_amd64 = "sha256-PIBWkCwU/7N242wR/WmpJDDJKLDGk/sJxPxa05bOQSE=";
+    version = "119.0.6045.123";
   };
   ungoogled-chromium = {
     deps = {
       gn = {
-        rev = "811d332bd90551342c5cbd39e133aa276022d7f8";
-        sha256 = "0jlg3d31p346na6a3yk0x29pm6b7q03ck423n5n6mi8nv4ybwajq";
+        hash = "sha256-4jWqtsOBh96xbYk1m06G9hj2eQwW6buUXsxWsa5W6/4=";
+        rev = "991530ce394efb58fcd848195469022fa17ae126";
         url = "https://gn.googlesource.com/gn";
-        version = "2023-08-01";
+        version = "2023-09-12";
       };
       ungoogled-patches = {
-        rev = "117.0.5938.92-1";
-        sha256 = "0ix0vaki9r305js61qraiah3vqjaj3dyycabi6grfavdgjpjkasb";
+        hash = "sha256-4EbfM62KuG8nHrYWwp183V5G9ac7FICjpyJahnKbQjE=";
+        rev = "119.0.6045.123-1";
       };
     };
-    sha256 = "0b1l8gjhqbsyqi30rsn8dyq2hdvwasdqfk1qzk55f9ch4wclkjk5";
-    sha256bin64 = "047w7y4c8k076yzrjc50lvwncbk8b3lyqnd1si9nrsl7c66j2h0q";
-    version = "117.0.5938.92";
+    hash = "sha256-UR8EowMYZ668qQ/6C9C/M+0HSguyUGKVhY46FTG+ShA=";
+    hash_deb_amd64 = "sha256-PIBWkCwU/7N242wR/WmpJDDJKLDGk/sJxPxa05bOQSE=";
+    version = "119.0.6045.123";
   };
 }

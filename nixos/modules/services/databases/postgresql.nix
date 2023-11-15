@@ -55,7 +55,7 @@ in
 
       package = mkOption {
         type = types.package;
-        example = literalExpression "pkgs.postgresql_11";
+        example = literalExpression "pkgs.postgresql_15";
         description = lib.mdDoc ''
           PostgreSQL package to use.
         '';
@@ -78,7 +78,7 @@ in
       dataDir = mkOption {
         type = types.path;
         defaultText = literalExpression ''"/var/lib/postgresql/''${config.services.postgresql.package.psqlSchema}"'';
-        example = "/var/lib/postgresql/11";
+        example = "/var/lib/postgresql/15";
         description = lib.mdDoc ''
           The data directory for PostgreSQL. If left as the default value
           this directory will automatically be created before the PostgreSQL server starts, otherwise
@@ -106,12 +106,14 @@ in
       identMap = mkOption {
         type = types.lines;
         default = "";
+        example = ''
+          map-name-0 system-username-0 database-username-0
+          map-name-1 system-username-1 database-username-1
+        '';
         description = lib.mdDoc ''
           Defines the mapping from system users to database users.
 
-          The general form is:
-
-          map-name system-username database-username
+          See the [auth doc](https://postgresql.org/docs/current/auth-username-maps.html).
         '';
       };
 
@@ -128,6 +130,11 @@ in
       initialScript = mkOption {
         type = types.nullOr types.path;
         default = null;
+        example = literalExpression ''
+          pkgs.writeText "init-sql-script" '''
+            alter user postgres with password 'myPassword';
+          ''';'';
+
         description = lib.mdDoc ''
           A file containing SQL statements to execute on first startup.
         '';
@@ -380,7 +387,7 @@ in
       extraPlugins = mkOption {
         type = types.listOf types.path;
         default = [];
-        example = literalExpression "with pkgs.postgresql_11.pkgs; [ postgis pg_repack ]";
+        example = literalExpression "with pkgs.postgresql_15.pkgs; [ postgis pg_repack ]";
         description = lib.mdDoc ''
           List of PostgreSQL plugins. PostgreSQL version for each plugin should
           match version for `services.postgresql.package` value.
@@ -392,7 +399,7 @@ in
         default = {};
         description = lib.mdDoc ''
           PostgreSQL configuration. Refer to
-          <https://www.postgresql.org/docs/11/config-setting.html#CONFIG-SETTING-CONFIGURATION-FILE>
+          <https://www.postgresql.org/docs/15/config-setting.html#CONFIG-SETTING-CONFIGURATION-FILE>
           for an overview of `postgresql.conf`.
 
           ::: {.note}
@@ -451,9 +458,10 @@ in
 
     services.postgresql.package = let
         mkThrow = ver: throw "postgresql_${ver} was removed, please upgrade your postgresql version.";
-        base = if versionAtLeast config.system.stateVersion "22.05" then pkgs.postgresql_14
+        base = if versionAtLeast config.system.stateVersion "23.11" then pkgs.postgresql_15
+            else if versionAtLeast config.system.stateVersion "22.05" then pkgs.postgresql_14
             else if versionAtLeast config.system.stateVersion "21.11" then pkgs.postgresql_13
-            else if versionAtLeast config.system.stateVersion "20.03" then pkgs.postgresql_11
+            else if versionAtLeast config.system.stateVersion "20.03" then mkThrow "11"
             else if versionAtLeast config.system.stateVersion "17.09" then mkThrow "9_6"
             else mkThrow "9_5";
     in
@@ -464,13 +472,16 @@ in
 
     services.postgresql.dataDir = mkDefault "/var/lib/postgresql/${cfg.package.psqlSchema}";
 
-    services.postgresql.authentication = mkAfter
+    services.postgresql.authentication = mkMerge [
+      (mkBefore "# Generated file; do not edit!")
+      (mkAfter
       ''
-        # Generated file; do not edit!
+        # default value of services.postgresql.authentication
         local all all              peer
         host  all all 127.0.0.1/32 md5
         host  all all ::1/128      md5
-      '';
+      '')
+    ];
 
     users.users.postgres =
       { name = "postgres";
@@ -577,7 +588,7 @@ in
                    else "simple";
 
             # Shut down Postgres using SIGINT ("Fast Shutdown mode").  See
-            # http://www.postgresql.org/docs/current/static/server-shutdown.html
+            # https://www.postgresql.org/docs/current/server-shutdown.html
             KillSignal = "SIGINT";
             KillMode = "mixed";
 

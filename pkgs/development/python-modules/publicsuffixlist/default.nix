@@ -5,19 +5,24 @@
 , pytestCheckHook
 , pythonOlder
 , requests
+, setuptools
 }:
 
 buildPythonPackage rec {
   pname = "publicsuffixlist";
-  version = "0.10.0.20230920";
-  format = "setuptools";
+  version = "0.10.0.20231109";
+  pyproject = true;
 
   disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-4Sp8uyJAJ+Sg0wv6TjNkMOCKlL/c/2ToWP1byG2BZtE=";
+    hash = "sha256-cr2rEoGVJ8BeXLfyPq4Auxu7OEOlVnKxlSMUREmji2E=";
   };
+
+  nativeBuildInputs = [
+    setuptools
+  ];
 
   passthru.optional-dependencies = {
     update = [

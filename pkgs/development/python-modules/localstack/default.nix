@@ -20,13 +20,13 @@
 
 buildPythonPackage rec {
   pname = "localstack";
-  version = "2.2.0";
+  version = "2.3.2";
 
   src = fetchFromGitHub {
     owner = "localstack";
     repo = "localstack";
     rev = "refs/tags/v${version}";
-    hash = "sha256-hlK3pltajFRAtiwLOJQNmxRfoRAX5Jccygglbhb45O8=";
+    hash = "sha256-8HrPnMmzoxgAhu3Qm18FBJ3kNoGOD7bGmI1t7tcETwM=";
   };
 
   postPatch = ''

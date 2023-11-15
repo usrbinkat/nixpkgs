@@ -1,8 +1,8 @@
 self: dontUse: with self;
 
 let
-  inherit (python) pythonForBuild;
-  pythonInterpreter = pythonForBuild.interpreter;
+  inherit (python) pythonOnBuildForHost;
+  pythonInterpreter = pythonOnBuildForHost.interpreter;
   pythonSitePackages = python.sitePackages;
   pythonCheckInterpreter = python.interpreter;
   setuppy = ../run_setup.py;
@@ -57,9 +57,21 @@ in {
   pypaBuildHook = callPackage ({ makePythonHook, build, wheel }:
     makePythonHook {
       name = "pypa-build-hook.sh";
-      propagatedBuildInputs = [ build wheel ];
+      propagatedBuildInputs = [ wheel ];
+      substitutions = {
+        inherit build;
+      };
+      # A test to ensure that this hook never propagates any of its dependencies
+      #   into the build environment.
+      # This prevents false positive alerts raised by catchConflictsHook.
+      # Such conflicts don't happen within the standard nixpkgs python package
+      #   set, but in downstream projects that build packages depending on other
+      #   versions of this hook's dependencies.
+      passthru.tests = import ./pypa-build-hook-tests.nix {
+        inherit pythonOnBuildForHost runCommand;
+      };
     } ./pypa-build-hook.sh) {
-      inherit (pythonForBuild.pkgs) build;
+      inherit (pythonOnBuildForHost.pkgs) build;
     };
 
   pipInstallHook = callPackage ({ makePythonHook, pip }:
@@ -79,7 +91,7 @@ in {
         inherit pythonInterpreter pythonSitePackages;
       };
     } ./pypa-install-hook.sh) {
-      inherit (pythonForBuild.pkgs) installer;
+      inherit (pythonOnBuildForHost.pkgs) installer;
     };
 
   pytestCheckHook = callPackage ({ makePythonHook, pytest }:
@@ -215,6 +227,6 @@ in {
   sphinxHook = callPackage ({ makePythonHook, installShellFiles }:
     makePythonHook {
       name = "python${python.pythonVersion}-sphinx-hook";
-      propagatedBuildInputs = [ pythonForBuild.pkgs.sphinx installShellFiles ];
+      propagatedBuildInputs = [ pythonOnBuildForHost.pkgs.sphinx installShellFiles ];
     } ./sphinx-hook.sh) {};
 }

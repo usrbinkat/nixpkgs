@@ -48,6 +48,7 @@ let
       "rescue.service"
 
       # Udev.
+      "systemd-tmpfiles-setup-dev-early.service"
       "systemd-udevd-control.socket"
       "systemd-udevd-kernel.socket"
       "systemd-udevd.service"
@@ -574,7 +575,7 @@ in
     system.requiredKernelConfig = map config.lib.kernelConfig.isEnabled
       [ "DEVTMPFS" "CGROUPS" "INOTIFY_USER" "SIGNALFD" "TIMERFD" "EPOLL" "NET"
         "SYSFS" "PROC_FS" "FHANDLE" "CRYPTO_USER_API_HASH" "CRYPTO_HMAC"
-        "CRYPTO_SHA256" "DMIID" "AUTOFS4_FS" "TMPFS_POSIX_ACL"
+        "CRYPTO_SHA256" "DMIID" "AUTOFS_FS" "TMPFS_POSIX_ACL"
         "TMPFS_XATTR" "SECCOMP"
       ];
 
