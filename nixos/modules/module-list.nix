@@ -1276,6 +1276,7 @@
   ./services/networking/gobgpd.nix
   ./services/networking/godns.nix
   ./services/networking/gokapi.nix
+  ./services/networking/gssproxy.nix
   ./services/networking/gvpe.nix
   ./services/networking/hans.nix
   ./services/networking/haproxy.nix
