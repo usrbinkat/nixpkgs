@@ -7,12 +7,12 @@
 
 python3Packages.buildPythonPackage rec {
   pname = "lesscpy";
-  version = "0.15.1";
+  version = "0.15.2";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-EEXRepj2iGRsp1jf8lTm6cA3RWSOBRoIGwOVw7d8gkw=";
+    hash = "sha256-T2t/NMIsXOE35+4oDcsZhK3g1QC22rWR1KTYQlLRjek=";
   };
 
   patches = [
@@ -27,7 +27,6 @@ python3Packages.buildPythonPackage rec {
 
   dependencies = with python3Packages; [
     ply
-    six
   ];
 
   nativeCheckInputs = with python3Packages; [ pytestCheckHook ];
