@@ -28767,6 +28767,12 @@
     githubId = 22500027;
     keys = [ { fingerprint = "EC4E E490 3C82 3698 2CAB  D206 2D87 60B0 229E 2560"; } ];
   };
+  usrbinkat = {
+    name = "Kathryn Morgan";
+    email = "kathryn.morgan@braincraft.io";
+    github = "usrbinkat";
+    githubId = 12972293;
+  };
   uskudnik = {
     email = "urban.skudnik@gmail.com";
     github = "uskudnik";
