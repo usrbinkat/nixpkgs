@@ -59,6 +59,7 @@ let
     pyusb
     yubico
     setuptools
+    packaging
     jinja2
     augeas
     samba
@@ -133,13 +134,21 @@ stdenv.mkDerivation (finalAttrs: {
   ++ pythonInputs;
 
   postPatch = ''
-    patchShebangs makeapi makeaci install/ui/util
+    # pkg_resources removed from setuptools 82.x / Python 3.14
+    find . -type f \( -name '*.py' -o -name '*.py.in' \) \
+      -exec sed -i 's/from pkg_resources import parse_version/from packaging.version import parse as parse_version/g' {} +
+
+    # makeapi/makeaci only exist in server builds; client-only (--disable-server) skips them
+    patchShebangs install/ui/util
+    for f in makeapi makeaci; do
+      [ -f "$f" ] && patchShebangs "$f"
+    done
 
     substituteInPlace ipasetup.py.in \
-      --replace 'int(v)' 'int(v.replace("post", ""))'
+      --replace-fail 'int(v)' 'int(v.replace("post", ""))'
 
     substituteInPlace client/ipa-join.c \
-      --replace /usr/sbin/ipa-getkeytab $out/bin/ipa-getkeytab
+      --replace-fail /usr/sbin/ipa-getkeytab $out/bin/ipa-getkeytab
 
     substituteInPlace ipaplatform/nixos/paths.py \
       --subst-var out \
