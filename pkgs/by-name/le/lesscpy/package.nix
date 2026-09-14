@@ -3,6 +3,7 @@
   python3Packages,
   fetchPypi,
   fetchpatch,
+  versionCheckHook,
 }:
 
 python3Packages.buildPythonPackage rec {
@@ -25,6 +26,14 @@ python3Packages.buildPythonPackage rec {
 
   build-system = with python3Packages; [ setuptools ];
 
+  postPatch = ''
+    substituteInPlace lesscpy/scripts/compiler.py \
+      --replace-fail 'from lesscpy.lessc import' 'from lesscpy import __version__
+    from lesscpy.lessc import' \
+      --replace-fail 'VERSION_STR = "Lesscpy compiler 0.9h"' \
+        'VERSION_STR = "Lesscpy compiler " + __version__'
+  '';
+
   dependencies = with python3Packages; [
     ply
   ];
@@ -32,6 +41,10 @@ python3Packages.buildPythonPackage rec {
   nativeCheckInputs = with python3Packages; [ pytestCheckHook ];
 
   pythonImportsCheck = [ "lesscpy" ];
+
+  nativeInstallCheckInputs = [ versionCheckHook ];
+  versionCheckProgram = "${placeholder "out"}/bin/lesscpy";
+  doInstallCheck = true;
 
   meta = {
     description = "Python LESS Compiler";
