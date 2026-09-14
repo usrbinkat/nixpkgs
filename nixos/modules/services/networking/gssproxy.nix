@@ -138,6 +138,11 @@ in
       gssproxy_v1  2.16.840.1.113730.3.8.15.1  ${cfg.package}/lib/gssproxy/proxymech.so  <interposer>
     '';
 
+    systemd.tmpfiles.rules = [
+      "d /var/lib/gssproxy/clients 0700 root root -"
+      "d /var/lib/gssproxy/rcache 0700 root root -"
+    ];
+
     systemd.services.gssproxy = {
       description = "GSSAPI Proxy Daemon";
       after = [ "network.target" ];
@@ -145,12 +150,16 @@ in
       restartTriggers = [ configFile ];
 
       serviceConfig = {
-        Type = "notify";
-        ExecStart = "${lib.getExe cfg.package} -i -c ${configFile}";
+        # Version 0.9.2 signals its parent after binding sockets; it does not send sd_notify.
+        Type = "forking";
+        ExecStart = "${lib.getExe cfg.package} -D -c ${configFile}";
+        PIDFile = "/run/gssproxy/gssproxy.pid";
+        RuntimeDirectory = "gssproxy";
         ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
-        StateDirectory = "gssproxy gssproxy/clients gssproxy/rcache";
-        StateDirectoryMode = "0700";
+        # rpc.gssd connects as the requesting user; the socket parent must be traversable.
+        StateDirectory = "gssproxy";
+        StateDirectoryMode = "0755";
         Environment = "KRB5RCACHEDIR=/var/lib/gssproxy/rcache";
 
         ProtectSystem = "strict";
@@ -172,7 +181,11 @@ in
         SystemCallErrorNumber = "EPERM";
         SystemCallArchitectures = "native";
         NoNewPrivileges = true;
-        CapabilityBoundingSet = [ "CAP_DAC_OVERRIDE" ];
+        CapabilityBoundingSet = [
+          "CAP_DAC_OVERRIDE"
+          # Resolving the connecting process's /proc/<pid>/exe requires ptrace access.
+          "CAP_SYS_PTRACE"
+        ];
         RestrictAddressFamilies = [
           "AF_UNIX"
           "AF_INET"
@@ -186,6 +199,8 @@ in
         {
           after = [ "gssproxy.service" ];
           wants = [ "gssproxy.service" ];
+          # MIT Kerberos otherwise searches its immutable package-prefix configuration directory.
+          environment.GSS_MECH_CONFIG = config.environment.etc."gss/mech.d/gssproxy.conf".source;
           serviceConfig.Environment = [ "GSS_USE_PROXY=yes" ];
         };
   };
