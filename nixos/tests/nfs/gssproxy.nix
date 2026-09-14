@@ -2,11 +2,25 @@ import ../make-test-python.nix (
   { pkgs, lib, ... }:
 
   let
+    krb5Package = pkgs.krb5.override { withLdap = true; };
+    krbLdapSchema = pkgs.runCommand "krb-ldap-schema" { } ''
+      tar -Oxf ${krb5Package.src} \
+        ${krb5Package.sourceRoot}/plugins/kdb/ldap/libkdb_ldap/kerberos.openldap.ldif > $out
+    '';
+
+    delegation = pkgs.writeText "nfs-delegation.ldif" ''
+      dn: krbPrincipalName=host/client.nfs.test@NFS.TEST,cn=NFS.TEST,cn=realms,dc=nfs,dc=test
+      changetype: modify
+      add: krbAllowedToDelegateTo
+      krbAllowedToDelegateTo: nfs/server.nfs.test@NFS.TEST
+    '';
+
     security.krb5 = {
       enable = true;
       settings = {
         domain_realm."nfs.test" = "NFS.TEST";
         libdefaults.default_realm = "NFS.TEST";
+        libdefaults.forwardable = true;
         realms."NFS.TEST" = {
           admin_server = "server.nfs.test";
           kdc = "server.nfs.test";
@@ -47,6 +61,7 @@ import ../make-test-python.nix (
             services.nfs-client = {
               allowAnyUid = true;
               impersonate = true;
+              program = "${pkgs.nfs-utils}/bin/rpc.gssd";
             };
           };
 
@@ -66,7 +81,10 @@ import ../make-test-python.nix (
       server =
         { lib, ... }:
         {
-          inherit security users;
+          inherit users;
+          security.krb5 = security.krb5 // {
+            package = krb5Package;
+          };
 
           networking.extraHosts = hosts;
           networking.domain = "nfs.test";
@@ -78,9 +96,41 @@ import ../make-test-python.nix (
             88 # kerberos
             749 # kerberos admin
           ];
+          networking.firewall.allowedUDPPorts = [ 88 ];
+
+          services.openldap = {
+            enable = true;
+            urlList = [ "ldapi:///" ];
+            declarativeContents."dc=nfs,dc=test" = ''
+              dn: dc=nfs,dc=test
+              objectClass: organization
+              objectClass: dcObject
+              dc: nfs
+              o: NFS test
+            '';
+            settings.children = {
+              "cn=schema".includes = [
+                "${pkgs.openldap}/etc/schema/core.ldif"
+                "${pkgs.openldap}/etc/schema/cosine.ldif"
+                krbLdapSchema
+              ];
+              "olcDatabase={1}mdb".attrs = {
+                objectClass = [
+                  "olcDatabaseConfig"
+                  "olcMdbConfig"
+                ];
+                olcDatabase = "{1}mdb";
+                olcDbDirectory = "/var/lib/openldap/db";
+                olcSuffix = "dc=nfs,dc=test";
+                olcRootDN = "cn=root,dc=nfs,dc=test";
+                olcRootPW = "ldap_test_password";
+                olcAccess = [ "to * by * none" ];
+              };
+            };
+          };
 
           services.kerberos_server.enable = true;
-          services.kerberos_server.realms = {
+          services.kerberos_server.settings.realms = {
             "NFS.TEST".acl = [
               {
                 access = "all";
@@ -88,8 +138,25 @@ import ../make-test-python.nix (
               }
             ];
           };
+          services.kerberos_server.settings.dbmodules."NFS.TEST" = {
+            db_library = "kldap";
+            ldap_kerberos_container_dn = "cn=realms,dc=nfs,dc=test";
+            ldap_kdc_dn = "cn=root,dc=nfs,dc=test";
+            ldap_kadmind_dn = "cn=root,dc=nfs,dc=test";
+            ldap_service_password_file = "/var/lib/krb5kdc/ldap-password";
+            ldap_servers = "ldapi:///";
+          };
 
           services.nfs.server.enable = true;
+          services.gssproxy = {
+            enable = true;
+            services.nfs-server = {
+              kernelNfsd = true;
+              trusted = true;
+              credUsage = "accept";
+            };
+          };
+          systemd.services.rpc-svcgssd.enable = false;
           services.nfs.server.createMountPoints = true;
           services.nfs.server.exports = ''
             /data *(rw,no_root_squash,fsid=0,sec=krb5p)
@@ -101,9 +168,13 @@ import ../make-test-python.nix (
       server.succeed("mkdir -p /data/alice")
       server.succeed("chown alice:users /data/alice")
 
-      # set up kerberos database
+      # Create the LDAP-backed realm and its password stash inside the VM.
+      # MIT's DB2 backend cannot authorize S4U2Proxy delegation.
+      server.wait_for_unit("openldap.service")
       server.succeed(
-          "kdb5_util create -s -r NFS.TEST -P master_key",
+          "mkdir -p /var/lib/krb5kdc",
+          "printf '%s\\n' ldap_test_password ldap_test_password | kdb5_ldap_util -r NFS.TEST stashsrvpw -f /var/lib/krb5kdc/ldap-password cn=root,dc=nfs,dc=test",
+          "kdb5_ldap_util -D cn=root,dc=nfs,dc=test -w ldap_test_password -r NFS.TEST create -s -P master_key",
           "systemctl restart kadmind.service kdc.service",
       )
       server.wait_for_unit("kadmind.service")
@@ -118,18 +189,19 @@ import ../make-test-python.nix (
           "kadmin.local add_principal -pw alice_pw alice",
       )
 
-      # ok_to_auth_as_delegate is a safe default for S4U2Self; with a
-      # vanilla MIT KDC and no GCD rules it is not strictly required
-      # (S4U2Self tickets are forwardable by default in krb5 1.20+)
-      # but it is required in FreeIPA environments where GCD rules exist.
+      # Permit forwardable S4U2Self tickets and delegation only to this NFS server.
       server.succeed(
           "kadmin.local modify_principal +ok_to_auth_as_delegate host/client.nfs.test",
+          "ldapmodify -x -H ldapi:/// -D cn=root,dc=nfs,dc=test -w ldap_test_password -f ${delegation}",
       )
 
       server.succeed("kadmin.local ktadd nfs/server.nfs.test")
-      server.succeed("systemctl start rpc-gssd.service rpc-svcgssd.service")
-      server.wait_for_unit("rpc-gssd.service")
-      server.wait_for_unit("rpc-svcgssd.service")
+      with subtest("kernel NFS uses gssproxy without rpc-svcgssd"):
+          server.succeed("systemctl start auth-rpcgss-module.service")
+          server.succeed("systemctl restart gssproxy.service")
+          server.succeed("test -S /run/gssproxy.sock")
+          server.succeed("test $(cat /proc/net/rpc/use-gss-proxy) = 1")
+          server.fail("systemctl is-active rpc-svcgssd.service")
 
       client.systemctl("start network-online.target")
       client.wait_for_unit("network-online.target")
@@ -138,6 +210,18 @@ import ../make-test-python.nix (
       client.succeed("echo admin_pw | kadmin -p admin/admin ktadd nfs/client.nfs.test")
 
       client.wait_for_unit("gssproxy.service")
+      client.succeed("${lib.getExe pkgs.gssproxy} --version")
+      with subtest("service startup waits for sockets and tracks the daemon PID"):
+          client.succeed("systemctl stop gssproxy.service")
+          client.succeed("rm -f /var/lib/gssproxy/default.sock")
+          client.succeed("systemctl start gssproxy.service")
+          client.succeed("test -S /var/lib/gssproxy/default.sock")
+          client.succeed("test $(cat /run/gssproxy/gssproxy.pid) = $(systemctl show -p MainPID --value gssproxy.service)")
+          client.succeed("systemctl reload gssproxy.service")
+          client.succeed("systemctl is-active gssproxy.service")
+      client.succeed("su alice -c 'test -S /var/lib/gssproxy/default.sock'")
+      client.fail("su alice -c 'test -r /var/lib/gssproxy/clients'")
+      client.fail("su alice -c 'test -r /var/lib/gssproxy/rcache'")
       client.succeed("systemctl start rpc-gssd.service")
       client.wait_for_unit("rpc-gssd.service")
 
@@ -148,6 +232,8 @@ import ../make-test-python.nix (
       with subtest("nfs share mounts with gssproxy (no kinit)"):
           client.succeed("systemctl restart data.mount")
           client.wait_for_unit("data.mount")
+
+          client.succeed("grep proxymech.so /proc/$(pgrep rpc.gssd)/maps")
 
       with subtest("access denied without gssproxy or kinit"):
           # Stop gssproxy and verify alice cannot access NFS without
@@ -174,6 +260,8 @@ import ../make-test-python.nix (
           ids = client.succeed("stat -c '%U %G' /data/alice").split()
           expected = ["alice", "users"]
           assert ids == expected, f"ids incorrect: got {ids} expected {expected}"
+
+      client.fail("journalctl -u gssproxy --no-pager | grep 'Unexpected failure in realpath'")
     '';
 
     meta.maintainers = [ lib.maintainers.usrbinkat ];
