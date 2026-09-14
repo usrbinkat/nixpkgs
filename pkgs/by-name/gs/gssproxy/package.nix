@@ -30,6 +30,9 @@ stdenv.mkDerivation (finalAttrs: {
   __structuredAttrs = true;
   strictDeps = true;
 
+  __structuredAttrs = true;
+  strictDeps = true;
+
   src = fetchFromGitHub {
     owner = "gssapi";
     repo = "gssproxy";
@@ -48,7 +51,9 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    libkrb5
+    # Avoid krb5's bundled libverto, whose built-in backend crashes in
+    # verto_cleanup. Both libraries must use the standalone implementation.
+    (libkrb5.override { withVerto = true; })
     libverto
     ding-libs
     popt
@@ -60,11 +65,19 @@ stdenv.mkDerivation (finalAttrs: {
     export SGML_CATALOG_FILES="${docbookFiles}"
   '';
 
+  postPatch = ''
+    substituteInPlace systemd/gssproxy.service.in \
+      --replace-fail 'PIDFile=/run/gssproxy.pid' 'PIDFile=/run/gssproxy/gssproxy.pid
+    RuntimeDirectory=gssproxy'
+  '';
+
   configureFlags = [
+    "--localstatedir=/var"
+    "--with-pid-file=/run/gssproxy/gssproxy.pid"
     "--with-pubconf-path=/etc/gssproxy"
     "--with-initscript=systemd"
-    "--with-systemd-unit-dir=${placeholder "out"}/lib/systemd/system"
-    "--with-systemd-user-unit-dir=${placeholder "out"}/lib/systemd/user"
+    "--with-systemdunitdir=${placeholder "out"}/lib/systemd/system"
+    "--with-systemduserunitdir=${placeholder "out"}/lib/systemd/user"
     "--disable-static"
     "--disable-rpath"
     "--with-gpp-default-behavior=REMOTE_FIRST"
