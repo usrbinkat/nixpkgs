@@ -20,6 +20,7 @@
   version,
   release_version,
   zlib,
+  zstd,
   which,
   sysctl,
   buildLlvmPackages,
@@ -33,11 +34,14 @@
     && !stdenv.hostPlatform.isAarch,
   enablePolly ? true,
   enableTerminfo ? true,
+  enableZstd ? true,
   devExtraCmakeFlags ? [ ],
   getVersionFile,
   fetchpatch,
   # for tests
   libllvm,
+  clang,
+  lld,
 }:
 
 let
@@ -289,7 +293,8 @@ stdenv.mkDerivation (
     propagatedBuildInputs = [
       ncurses
       zlib
-    ];
+    ]
+    ++ optional enableZstd zstd;
 
     nativeCheckInputs = [
       which
@@ -496,6 +501,7 @@ stdenv.mkDerivation (
         (lib.cmakeBool "LLVM_INSTALL_UTILS" true) # Needed by rustc
         (lib.cmakeBool "LLVM_BUILD_TESTS" finalAttrs.finalPackage.doCheck)
         (lib.cmakeBool "LLVM_ENABLE_FFI" true)
+        (lib.cmakeFeature "LLVM_ENABLE_ZSTD" (if enableZstd then "FORCE_ON" else "OFF"))
         (lib.cmakeFeature "LLVM_HOST_TRIPLE" stdenv.hostPlatform.config)
         (lib.cmakeFeature "LLVM_DEFAULT_TARGET_TRIPLE" stdenv.hostPlatform.config)
         (lib.cmakeBool "LLVM_ENABLE_DUMP" true)
@@ -615,7 +621,51 @@ stdenv.mkDerivation (
         enablePFM = false;
         enablePolly = false;
         enableTerminfo = false;
+        enableZstd = false;
       };
+      tests.zstd-debug-info =
+        runCommand "llvm-zstd-debug-info"
+          {
+            nativeBuildInputs = [
+              clang
+              lld
+              libllvm
+            ];
+            meta.platforms = lib.platforms.linux;
+          }
+          ''
+            cat > main.c <<'EOF'
+            int main(void) { return 0; }
+            EOF
+            # Small debug sections may be left uncompressed by LLVM.
+            for i in $(seq 1 100); do
+              echo "int debug_function_$i(int value) { return value + $i; }" >> main.c
+            done
+            clang -g -gz=zstd -Werror -c main.c -o main.o
+            llvm-readelf --section-details main.o > sections.txt
+            grep -q 'ZSTD,' sections.txt
+            llvm-dwarfdump --verify main.o
+            llvm-objcopy --decompress-debug-sections main.o uncompressed.o
+            llvm-readobj --sections uncompressed.o > uncompressed.txt
+            if grep -q SHF_COMPRESSED uncompressed.txt; then
+              exit 1
+            fi
+            llvm-dwarfdump --verify uncompressed.o
+            llvm-objcopy --compress-debug-sections=zstd uncompressed.o recompressed.o
+            llvm-objcopy --decompress-debug-sections recompressed.o roundtrip.o
+            llvm-objcopy --dump-section .debug_info=original.debug uncompressed.o
+            llvm-objcopy --dump-section .debug_info=roundtrip.debug roundtrip.o
+            cmp original.debug roundtrip.debug
+            clang -fuse-ld=lld -Wl,--compress-debug-sections=zstd main.o -o main
+            llvm-readelf --section-details main > linked-sections.txt
+            grep -q 'ZSTD,' linked-sections.txt
+            llvm-dwarfdump --verify main
+            llvm-dwarfdump --debug-info main > debug-info.txt
+            grep -q DW_TAG_subprogram debug-info.txt
+            grep -q '"main"' debug-info.txt
+            ${optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) "./main"}
+            touch "$out"
+          '';
     };
 
     requiredSystemFeatures = [ "big-parallel" ];
