@@ -74,6 +74,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     # OpenTUI dlopens Wayland for clipboard images.
     wrapProgram $out/bin/opencode \
+      --set OPENCODE_DISABLE_AUTOUPDATE true \
       --prefix PATH : ${
         lib.makeBinPath (
           [
@@ -83,8 +84,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
         )
       } ${lib.optionalString stdenvNoCC.hostPlatform.isLinux ''
         --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ wayland ]}
-      ''} \
-      --set OPENCODE_DISABLE_AUTOUPDATE true
+      ''}
 
     ln -s opencode $out/bin/opencode2
 
