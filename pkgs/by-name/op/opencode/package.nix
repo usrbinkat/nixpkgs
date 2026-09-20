@@ -27,8 +27,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "usrbinkat";
     repo = "opencode";
-    rev = "4853a401c8dddfe5e52049ede73e23f2476f4f4e";
-    hash = "sha256-dj7zahWv83gB8kZgJQI5/QMVeEUxRP8oUz6C9xDfCQ4=";
+    rev = "3e96a7498d309db5e138b84d75fac2ddd413ba93";
+    hash = "sha256-vmIvCewx/J9q39VRna2xVthVaLti+h4CNrZMZxGM1ZA=";
   };
 
   bunDeps = bun2nix.fetchBunDeps {
