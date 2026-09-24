@@ -19,7 +19,7 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "2.0.10";
+  version = "2.0.15";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -27,8 +27,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "usrbinkat";
     repo = "opencode";
-    rev = "3e96a7498d309db5e138b84d75fac2ddd413ba93";
-    hash = "sha256-vmIvCewx/J9q39VRna2xVthVaLti+h4CNrZMZxGM1ZA=";
+    rev = "9362c8bdbf42b1d08a479039bf85cc217dc443c1";
+    hash = "sha256-vmylnPQQI4aVXG279kVknxl7NAVjE4LvasYZiOlZNSA=";
   };
 
   bunDeps = bun2nix.fetchBunDeps {
