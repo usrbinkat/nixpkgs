@@ -93,19 +93,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   dontStrip = true;
 
-  postInstall =
-    lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
-      codesign --force --sign - $out/bin/.opencode-wrapped
-    ''
-    + lib.optionalString (stdenvNoCC.buildPlatform.canExecute stdenvNoCC.hostPlatform) ''
-      installShellCompletion --cmd opencode \
-        --bash <($out/bin/opencode completion) \
-        --zsh <(SHELL=/bin/zsh $out/bin/opencode completion)
-
-      installShellCompletion --cmd opencode2 \
-        --bash <($out/bin/opencode2 completion) \
-        --zsh <(SHELL=/bin/zsh $out/bin/opencode2 completion)
-    '';
+  postInstall = lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
+    codesign --force --sign - $out/bin/.opencode-wrapped
+  '';
 
   nativeInstallCheckInputs = [
     versionCheckHook
